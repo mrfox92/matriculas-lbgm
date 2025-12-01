@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - lbgm
+
+  nginx:
+    image: nginx:alpine
+    container_name: laravel_nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - lbgm
+
+  mysql:
+    image: mysql:8
+    container_name: mysql_lbgm
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lbgm
+      MYSQL_USER: lbgm
+      MYSQL_PASSWORD: lbgm
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - lbgm
+
+networks:
+  lbgm:
+
+volumes:
+  db_data:
