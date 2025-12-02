@@ -7,3 +7,12 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
+
+ARG UID=1000
+ARG GID=1000
+
+RUN groupadd -g $GID laravel \
+    && useradd -u $UID -g $GID -m laravel
+
+USER laravel
+
