@@ -36,3 +36,108 @@ Thumbs.db
 
 /*.sock
 *~
+# ======================================================
+# === ARCHIVOS DE SISTEMA DEL SO ===
+# ======================================================
+*.log
+.DS_Store
+Thumbs.db
+
+# ======================================================
+# === ARCHIVOS DE ENTORNO ===
+# ======================================================
+.env
+.env.*
+!.env.example
+
+# ======================================================
+# === CONFIGURACIÓN LOCAL (no deben ir al repo) ===
+# ======================================================
+.phpactor.json
+.phpunit.result.cache
+/.phpunit.cache
+/auth.json
+
+# ======================================================
+# === IDE / EDITOR (VSCode, JetBrains, etc.) ===
+# ======================================================
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+
+# ======================================================
+# === NODE / VITE (Laravel 12 usa Vite por defecto) ===
+# ======================================================
+/node_modules
+/public/build
+/public/hot
+
+# ======================================================
+# === LARAVEL STORAGE ===
+# ======================================================
+/public/storage
+/storage/*.key
+/storage/pail
+
+# Ignorar TODO storage completo
+/storage/*
+
+# Pero conservar estas carpetas (necesarias para producción)
+!/storage/app
+!/storage/app/public
+!/storage/framework
+!/storage/logs
+
+# Mantener los .gitignore internos
+!/storage/framework/.gitignore
+!/storage/logs/.gitignore
+
+# Ignorar contenido generado automáticamente
+/storage/framework/cache/*
+/storage/framework/views/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/logs/*
+
+# Volver a permitir solo los .gitignore de esas carpetas
+!/storage/framework/cache/.gitignore
+!/storage/framework/views/.gitignore
+!/storage/framework/sessions/.gitignore
+!/storage/framework/testing/.gitignore
+
+# ======================================================
+# === BOOTSTRAP CACHE ===
+# ======================================================
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
+# ======================================================
+# === VENDOR (Composer) ===
+# ======================================================
+/vendor
+
+# ======================================================
+# === DOCKER ===
+# ======================================================
+/db_data/
+/docker-data/
+/docker/mysql/
+/docker/nginx/
+/docker/php/
+/docker/*.pid
+/.docker/
+/*.sock
+*.pid
+
+# ======================================================
+# === ARCHIVOS TEMPORALES / BASURA ===
+# ======================================================
+*~
+
+# ======================================================
+# === PREVENIR QUE APAREZCAN .gitignore INTERNOS ===
+# ======================================================
+storage/**/.gitignore
+bootstrap/cache/.gitignore
