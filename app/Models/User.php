@@ -34,6 +34,16 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function enrollmentsProcessed()
+    {
+        return $this->hasMany(Enrollment::class, 'user_id');
+    }
+
+    public function auditLogs()
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

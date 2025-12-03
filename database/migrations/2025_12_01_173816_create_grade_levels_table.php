@@ -1,7 +1,4 @@
 <?php
-// TABLA: grade_levels (niveles de curso).
-// EJEMPLOS: Pre-Kinder, Kinder, 1° Básico, ... 4° Medio.
-// Se pobla con seeder y se usa como catálogo para crear cursos concretos por año.
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -12,8 +9,8 @@ return new class extends Migration {
     {
         Schema::create('grade_levels', function (Blueprint $table) {
             $table->id();
-            $table->string('name');   // "1° Básico", "3° Medio", etc.
-            $table->unsignedTinyInteger('order')->unique(); // orden lógico
+            $table->string('name');  // “1° Básico”, “3° Medio”, etc.
+            $table->unsignedTinyInteger('order')->unique();
             $table->timestamps();
         });
     }

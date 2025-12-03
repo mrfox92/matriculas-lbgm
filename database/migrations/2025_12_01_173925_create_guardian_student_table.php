@@ -1,7 +1,4 @@
 <?php
-// TABLA PIVOT: guardian_student.
-// RELACIÓN N:N entre guardians y students.
-// Guarda año lectivo y rol (Titular / Suplente / Otro).
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,24 +11,20 @@ return new class extends Migration {
             $table->id();
 
             $table->foreignId('guardian_id')
-                  ->constrained('guardians')
-                  ->cascadeOnUpdate()
-                  ->cascadeOnDelete();
+                ->constrained('guardians')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
             $table->foreignId('student_id')
-                  ->constrained('students')
-                  ->cascadeOnUpdate()
-                  ->cascadeOnDelete();
+                ->constrained('students')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
-            $table->unsignedSmallInteger('school_year');
-            $table->enum('role', ['Titular', 'Suplente', 'Otro'])->default('Titular');
+            $table->boolean('lives_with')->default(false);
 
             $table->timestamps();
 
-            $table->unique(
-                ['guardian_id', 'student_id', 'school_year', 'role'],
-                'unique_guardian_student_by_year_role'
-            );
+            $table->unique(['guardian_id', 'student_id'], 'unique_guardian_student_relation');
         });
     }
 

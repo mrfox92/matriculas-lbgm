@@ -1,15 +1,4 @@
 <?php
-// TABLA: enrollments (matrículas).
-// Representa la matrícula de un estudiante en un curso para un año específico.
-// Basada en el formulario + anotaciones: alumno PIE, almuerzo, autorizaciones, con quién vive.:contentReference[oaicite:3]{index=3}
-//
-// RELACIONES:
-//  - belongsTo Student
-//  - belongsTo Course
-//  - belongsTo Guardian (titular y suplente)
-//  - belongsTo User (quien digitó la matrícula)
-//
-// REGLA: un estudiante solo tiene UNA matrícula por año (unique student_id + school_year).
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -21,45 +10,53 @@ return new class extends Migration {
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
 
+            // Estudiante
             $table->foreignId('student_id')
-                  ->constrained('students')
-                  ->cascadeOnUpdate()
-                  ->restrictOnDelete();
+                ->constrained('students')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
 
+            // Curso (a veces no se conoce, se asigna en marzo)
             $table->foreignId('course_id')
-                  ->constrained('courses')
-                  ->cascadeOnUpdate()
-                  ->restrictOnDelete();
+                ->nullable()
+                ->constrained('courses')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
 
+            // Año escolar
             $table->unsignedSmallInteger('school_year');
 
+            // Apoderados del año (titular / suplente)
             $table->foreignId('guardian_titular_id')
-                  ->constrained('guardians')
-                  ->cascadeOnUpdate()
-                  ->restrictOnDelete();
+                ->constrained('guardians')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
 
             $table->foreignId('guardian_suplente_id')
-                  ->nullable()
-                  ->constrained('guardians')
-                  ->cascadeOnUpdate()
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained('guardians')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
 
-            // Usuario que realiza la matrícula (admin/digitador)
+            // Usuario que realizó la matrícula
             $table->foreignId('user_id')
-                  ->constrained('users')
-                  ->cascadeOnUpdate()
-                  ->restrictOnDelete();
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
 
+            // Datos del proceso
             $table->date('enrollment_date')->default(now());
-
             $table->enum('enrollment_type', ['New Student', 'Returning Student'])
                   ->default('Returning Student');
-            $table->enum('status', ['Pending', 'Confirmed', 'Canceled'])
+            $table->enum('status', ['Pending', 'Confirmed', 'Cancelled'])
                   ->default('Confirmed');
 
-            $table->string('internal_enrollment_number')->nullable();
+            // Promoción / repitencia
+            $table->unsignedBigInteger('previous_grade_level_id')->nullable();
+            $table->boolean('is_repeating')->default(false);
 
-            // Sección SALUD del formulario (por año)
+            // Formulario: salud del año
             $table->boolean('has_health_issues')->default(false);
             $table->text('health_issues_details')->nullable();
             $table->boolean('is_pie_student')->default(false);
@@ -68,17 +65,23 @@ return new class extends Migration {
             // Pregunta 1: con quién vive el estudiante
             $table->string('lives_with')->nullable();
 
-            // AUTORIZACIONES
+            // Autorizaciones
+            $table->boolean('consent_extra_activities')->default(false);
             $table->boolean('consent_field_trips')->default(false);
             $table->boolean('consent_photos')->default(false);
             $table->boolean('consent_school_bus')->default(false);
             $table->boolean('consent_internet')->default(false);
 
+            // Interno
+            $table->string('internal_enrollment_number')->nullable();
             $table->text('notes')->nullable();
 
             $table->timestamps();
 
-            $table->unique(['student_id', 'school_year'], 'one_enrollment_per_student_year');
+            $table->unique(
+                ['student_id', 'school_year'],
+                'one_enrollment_per_student_year'
+            );
         });
     }
 
