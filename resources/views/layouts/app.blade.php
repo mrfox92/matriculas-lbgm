@@ -13,14 +13,10 @@
 
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <!-- Livewire Styles -->
-    @livewireStyles
 </head>
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
-        
         <livewire:layout.navigation />
 
         @if (isset($header))
@@ -36,7 +32,16 @@
         </main>
     </div>
 
-    <!-- Livewire Scripts -->
-    @livewireScripts
+    {{-- Livewire desde vendor (lo que SÍ te funcionó) --}}
+    <script defer src="/vendor/livewire/livewire.js"></script>
+
+    <script>
+        document.addEventListener("livewire:init", () => {
+            console.log("Livewire iniciado correctamente");
+        });
+    </script>
+
+    {{-- Alpine por CDN, UNA sola vez --}}
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>

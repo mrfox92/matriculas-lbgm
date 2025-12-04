@@ -8,32 +8,44 @@ use Livewire\Component;
 
 class GuardianSearchModal extends Component
 {
-    public $open = false;
-    public $type = 'titular'; // titular | suplente
-    public $search = '';
+    public bool $open = false;
+    public string $type = 'titular'; // titular | suplente
+    public string $search = '';
     public $results = [];
 
     #[On('open-guardian-modal')]
-    public function openModal($data)
+    public function openModal(array $data = []): void
     {
-        $this->type = $data['type'];
+        // Si no viene nada, por defecto 'titular'
+        $this->type = $data['type'] ?? 'titular';
         $this->open = true;
+
+        // Opcional, para limpiar búsqueda anterior
+        $this->reset('search', 'results');
     }
 
-    public function updatedSearch()
+    public function updatedSearch(): void
     {
-        $this->results = Guardian::where('rut', 'like', "%{$this->search}%")
-            ->orWhere('last_name_father', 'like', "%{$this->search}%")
-            ->orWhere('first_name', 'like', "%{$this->search}%")
+        $term = trim($this->search);
+
+        if ($term === '') {
+            $this->results = [];
+            return;
+        }
+
+        $this->results = Guardian::query()
+            ->where('rut', 'like', "%{$term}%")
+            ->orWhere('last_name_father', 'like', "%{$term}%")
+            ->orWhere('first_name', 'like', "%{$term}%")
             ->limit(30)
             ->get();
     }
 
-    public function selectGuardian($id)
+    public function selectGuardian(int $id): void
     {
         $this->dispatch('guardian-selected', [
-            'id' => $id,
-            'type' => $this->type
+            'id'   => $id,
+            'type' => $this->type,
         ]);
 
         $this->open = false;

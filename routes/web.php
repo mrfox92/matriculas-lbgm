@@ -3,11 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
+use Illuminate\Support\Facades\Auth;
 
 Route::view('/', 'welcome');
 
 // Authentication routes
 require __DIR__.'/auth.php';
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
 
 // Routes with authentication
 Route::middleware(['auth'])->group(function () {

@@ -80,11 +80,13 @@ new class extends Component
                         </x-dropdown-link>
 
                         <!-- Logout -->
-                        <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link>
+                        <form method="POST" action="{{ route('logout') }}" class="w-full">
+                            @csrf
+                            <x-dropdown-link href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); this.closest('form').submit();">
                                 {{ __('Cerrar Sesión') }}
                             </x-dropdown-link>
-                        </button>
+                        </form>
                     </x-slot>
                 </x-dropdown>
             </div>
@@ -159,12 +161,16 @@ new class extends Component
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>
                     {{ __('Mi Perfil') }}
                 </x-responsive-nav-link>
-
-                <button wire:click="logout" class="w-full text-start">
-                    <x-responsive-nav-link>
+                <!-- Cerrar Sesion -->
+                <form method="POST" action="{{ route('logout') }}" class="w-full">
+                    @csrf
+                    <x-dropdown-link href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); this.closest('form').submit();">
                         {{ __('Cerrar Sesión') }}
-                    </x-responsive-nav-link>
-                </button>
+                    </x-dropdown-link>
+                </form>
+
+
             </div>
 
         </div>
