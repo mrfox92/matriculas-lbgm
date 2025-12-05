@@ -45,7 +45,7 @@ class EnrollmentTable extends Component
             $query->searchStudent($this->search);
         }
 
-        $enrollments = $query->orderBy('id', 'desc')->paginate(15);
+        $enrollments = $query->orderBy('id', 'desc')->paginate(4);
 
         return view('livewire.enrollment-table', [
             'enrollments' => $enrollments,

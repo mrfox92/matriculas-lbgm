@@ -16,14 +16,15 @@ return new class extends Migration {
             $table->string('last_name_mother')->nullable();
             $table->string('first_name');
 
+            // Datos personales
             $table->enum('gender', ['Femenino', 'Masculino', 'Otro'])->nullable();
             $table->date('birth_date')->nullable();
 
             // Contacto y dirección
             $table->string('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('phone_mobile')->nullable();
-            $table->string('phone_emergency')->nullable();
+            $table->string('commune')->nullable();               // comuna del apoderado
+            $table->string('phone')->nullable();                 // teléfono de contacto
+            $table->string('emergency_phone')->nullable();       // teléfono de emergencia
 
             // Nivel educacional
             $table->enum('education_level', [
@@ -34,12 +35,12 @@ return new class extends Migration {
             ])->nullable();
 
             // Situación laboral
-            $table->string('employment_status')->nullable(); // “Dueña de casa”, “Empleado”, etc.
+            $table->string('employment_status')->nullable();  // Dueña de casa / Empleado / Independiente / etc.
             $table->enum('work_main_place', ['En el hogar', 'Fuera del hogar', 'No trabaja'])->nullable();
-            $table->string('workplace')->nullable();
-            $table->string('work_phone')->nullable();
+            $table->string('workplace')->nullable();          // Lugar donde trabaja
+            $table->string('work_phone')->nullable();         // Teléfono laboral
 
-            // Quién puede retirar
+            // Quién puede retirar al estudiante
             $table->boolean('authorized_to_pickup')->default(true);
 
             $table->timestamps();

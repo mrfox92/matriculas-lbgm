@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     protected $fillable = [
-        'rut', 'last_name_father', 'last_name_mother', 'first_name',
-        'gender', 'birth_date', 'nationality',
-        'religion', 'religion_other',
-        'indigenous_ancestry', 'indigenous_ancestry_type',
-        'address', 'city', 'phone_mobile', 'phone_emergency',
-        'has_chronic_health_issues', 'chronic_health_details',
-        'rne', 'previous_enrollment_number'
+        'first_name', 'last_name_father', 'last_name_mother',
+        'rut', 'sex', 'birth_date', 'nationality', 'religion',
+        'has_indigenous_ancestry', 'address', 'commune',
+        'phone', 'emergency_phone',
+        'has_health_issues', 'health_issues_details',
     ];
+
 
     protected $casts = [
         'birth_date' => 'date',
@@ -38,10 +37,11 @@ class Student extends Model
 
     /* -------------------- ACCESSORS -------------------- */
 
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
-        return "{$this->last_name_father} {$this->last_name_mother} {$this->first_name}";
+        return trim("{$this->first_name} {$this->last_name_father} {$this->last_name_mother}");
     }
+
 
     /* -------------------- SCOPES -------------------- */
 

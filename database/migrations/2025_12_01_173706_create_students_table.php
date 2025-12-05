@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
 
-            // Datos de identificación
+            // Identificación
             $table->string('rut')->unique();
             $table->string('last_name_father');
             $table->string('last_name_mother')->nullable();
@@ -27,17 +27,17 @@ return new class extends Migration {
 
             // Pueblo originario
             $table->boolean('indigenous_ancestry')->default(false);
-            $table->string('indigenous_ancestry_type')->nullable(); // “Mapuche”, “Huilliche”, etc.
+            $table->string('indigenous_ancestry_type')->nullable(); // Mapuche, Huilliche, etc.
 
             // Contacto y dirección
             $table->string('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('phone_mobile')->nullable();
-            $table->string('phone_emergency')->nullable();
+            $table->string('commune')->nullable();      // antes city
+            $table->string('phone')->nullable();        // antes phone_mobile
+            $table->string('emergency_phone')->nullable(); // antes phone_emergency
 
-            // Salud permanentes
-            $table->boolean('has_chronic_health_issues')->default(false);
-            $table->text('chronic_health_details')->nullable();
+            // Salud (formulario actual)
+            $table->boolean('has_health_issues')->default(false);
+            $table->text('health_issues_details')->nullable();
 
             // Datos SIGE opcionales
             $table->string('rne')->nullable();

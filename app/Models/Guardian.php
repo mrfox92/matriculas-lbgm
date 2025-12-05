@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Guardian extends Model
 {
     protected $fillable = [
-        'rut', 'last_name_father', 'last_name_mother', 'first_name',
-        'gender', 'birth_date',
-        'address', 'city', 'phone_mobile', 'phone_emergency',
-        'education_level', 'employment_status',
-        'work_main_place', 'workplace', 'work_phone',
-        'authorized_to_pickup'
+        'rut','first_name','last_name_father','last_name_mother',
+        'sex','birth_date','address','commune',
+        'phone','emergency_phone',
+        'education_level','occupation','work_place'
     ];
+
 
     protected $casts = [
         'birth_date' => 'date',
@@ -31,10 +30,11 @@ class Guardian extends Model
 
     /* -------------------- ACCESSORS -------------------- */
 
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
-        return "{$this->last_name_father} {$this->last_name_mother} {$this->first_name}";
+        return trim("{$this->first_name} {$this->last_name_father} {$this->last_name_mother}");
     }
+
 
     /* -------------------- SCOPES -------------------- */
 
