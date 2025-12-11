@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    'matriculas_default_password' => env('DEFAULT_USER_PASSWORD', 'MatriculaLBGM2026'),
+
 ];

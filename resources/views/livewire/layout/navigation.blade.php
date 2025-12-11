@@ -11,7 +11,8 @@ new class extends Component
 
         $this->redirect('/', navigate: true);
     }
-}; ?>
+};
+?>
 
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
 
@@ -51,6 +52,17 @@ new class extends Component
                         {{ __('Nueva Matrícula') }}
                     </x-nav-link>
 
+                    <!-- ========================================= -->
+                    <!-- USUARIOS (ADMIN) - DROPDOWN DESPLEGABLE -->
+                    <!-- ========================================= -->
+                    @if(auth()->user()->hasRole('admin'))
+                        <x-nav-link :href="route('users.index')" 
+                                    :active="request()->routeIs('users.*')" 
+                                    wire:navigate>
+                            {{ __('Usuarios') }}
+                        </x-nav-link>
+                    @endif
+
                 </div>
             </div>
 
@@ -67,7 +79,7 @@ new class extends Component
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
-                                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a 1 1 0 111.414 1.414l-4 4a 1 1 0 01-1.414 0l-4-4a 1 1 0 010-1.414z"
                                           clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -99,14 +111,12 @@ new class extends Component
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }"
                               class="inline-flex"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              stroke-linecap="round" stroke-linejoin="round"
                               stroke-width="2"
                               d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }"
                               class="hidden"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              stroke-linecap="round" stroke-linejoin="round"
                               stroke-width="2"
                               d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -142,6 +152,14 @@ new class extends Component
                 {{ __('Nueva Matrícula') }}
             </x-responsive-nav-link>
 
+            <!-- Usuarios Responsive (solo admin) -->
+            @if(auth()->user()->hasRole('admin'))
+                <x-responsive-nav-link :href="route('users.index')" 
+                                       :active="request()->routeIs('users.*')" 
+                                       wire:navigate>
+                    {{ __('Usuarios') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings -->
@@ -161,6 +179,7 @@ new class extends Component
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>
                     {{ __('Mi Perfil') }}
                 </x-responsive-nav-link>
+
                 <!-- Cerrar Sesion -->
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
@@ -169,7 +188,6 @@ new class extends Component
                         {{ __('Cerrar Sesión') }}
                     </x-dropdown-link>
                 </form>
-
 
             </div>
 
