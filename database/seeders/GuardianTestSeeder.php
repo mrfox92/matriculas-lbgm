@@ -9,70 +9,56 @@ class GuardianTestSeeder extends Seeder
 {
     public function run(): void
     {
-        $guardianes = [
-            [
-                'rut' => '9.111.111-1',
-                'first_name' => 'Carolina',
-                'last_name_father' => 'Muñoz',
-                'last_name_mother' => 'Figueroa',
-                'gender' => 'Femenino',
-                'birth_date' => '1985-03-22',
+        $guardians = [
+            ['9.111.111-1', 'Carolina', 'Muñoz', 'Figueroa', 'Femenino'],
+            ['7.222.222-2', 'Pedro', 'Soto', 'Gómez', 'Masculino'],
+            ['6.333.333-3', 'Andrea', 'Vega', 'Paredes', 'Femenino'],
+            ['8.444.444-4', 'Miguel', 'Cares', 'Muñoz', 'Masculino'],
+            ['5.555.555-5', 'Verónica', 'Alarcón', 'Romero', 'Femenino'],
 
-                'address' => 'Sector Mulpun S/N',
-                'commune' => 'Máfil',
-                'phone' => '+56991110000',
-                'emergency_phone' => '+56995550000',
+            ['17.666.666-6', 'Claudia', 'Vásquez', 'Villanueva', 'Femenino'],
+            ['16.777.777-7', 'Rodrigo', 'Pinto', 'Campos', 'Masculino'],
+            ['12.888.888-8', 'Macarena', 'Cáceres', 'Sanhueza', 'Femenino'],
+            ['13.999.999-9', 'Felipe', 'Garrido', 'Meza', 'Masculino'],
+            ['15.101.010-1', 'Paula', 'Cáceres', 'Díaz', 'Femenino'],
 
-                'education_level' => 'Media completa',
-                'employment_status' => 'Dueña de casa',
-                'work_main_place' => 'En el hogar',
-                'workplace' => null,
-                'work_phone' => null,
-            ],
+            ['18.202.202-2', 'Ximena', 'Ruiz', 'Fernández', 'Femenino'],
+            ['14.303.303-3', 'Claudio', 'Rivas', 'Rocha', 'Masculino'],
+            ['19.404.404-4', 'Daniela', 'Espinoza', 'Mora', 'Femenino'],
+            ['22.505.505-5', 'Héctor', 'Quintana', 'Mella', 'Masculino'],
+            ['10.606.606-6', 'Natalia', 'Orellana', 'Bustamante', 'Femenino'],
 
-            [
-                'rut' => '7.222.222-2',
-                'first_name' => 'Pedro',
-                'last_name_father' => 'Soto',
-                'last_name_mother' => 'Gómez',
-                'gender' => 'Masculino',
-                'birth_date' => '1980-02-11',
-
-                'address' => 'Sector Huillón S/N',
-                'commune' => 'Máfil',
-                'phone' => '+56972220000',
-                'emergency_phone' => '+56978880000',
-
-                'education_level' => 'Profesional',
-                'employment_status' => 'Empleado',
-                'work_main_place' => 'Fuera del hogar',
-                'workplace' => 'Constructora Los Ríos',
-                'work_phone' => '+56632233445',
-            ],
-
-            [
-                'rut' => '6.333.333-3',
-                'first_name' => 'Andrea',
-                'last_name_father' => 'Vega',
-                'last_name_mother' => 'Paredes',
-                'gender' => 'Femenino',
-                'birth_date' => '1983-10-14',
-
-                'address' => 'Población Los Aromos 234',
-                'commune' => 'Máfil',
-                'phone' => '+56963330000',
-                'emergency_phone' => '+56969990000',
-
-                'education_level' => 'Técnico nivel medio',
-                'employment_status' => 'Independiente',
-                'work_main_place' => 'Fuera del hogar',
-                'workplace' => 'Atención estética',
-                'work_phone' => '+56961112222',
-            ],
+            ['11.707.707-7', 'Pablo', 'Campos', 'Riveros', 'Masculino'],
+            ['20.808.808-8', 'Marcela', 'Sandoval', 'Valdés', 'Femenino'],
+            ['21.909.909-9', 'Raúl', 'Méndez', 'Carvajal', 'Masculino'],
+            ['13.010.101-0', 'Gabriela', 'Toro', 'Yáñez', 'Femenino'],
+            ['14.020.202-1', 'Cristian', 'López', 'Bustamante', 'Masculino'],
         ];
 
-        foreach ($guardianes as $g) {
-            Guardian::firstOrCreate(['rut' => $g['rut']], $g);
+        foreach ($guardians as $g) {
+            Guardian::firstOrCreate(
+                ['rut' => $g[0]],
+                [
+                    'first_name' => $g[1],
+                    'last_name_father' => $g[2],
+                    'last_name_mother' => $g[3],
+                    'gender' => $g[4],
+                    'birth_date' => now()->subYears(rand(28,55)),
+
+                    'address' => 'Villa Los Robles #' . rand(10,200),
+                    'commune' => 'Máfil',
+                    'phone' => '+569' . rand(50000000,59999999),
+                    'emergency_phone' => '+569' . rand(60000000,69999999),
+
+                    'education_level' => 'Media completa',
+                    'employment_status' => 'Empleado',
+                    'work_main_place' => 'Fuera del hogar',
+                    'workplace' => 'Empresa Servicios',
+                    'work_phone' => '+566322' . rand(1000,9999),
+
+                    'authorized_to_pickup' => true,
+                ]
+            );
         }
     }
 }

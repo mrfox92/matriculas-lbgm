@@ -10,12 +10,12 @@ class UserRoleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Crear usuario administrador base
+        // Usuario Administrador
         $admin = User::firstOrCreate(
             ['email' => 'admin@lbgm.cl'],
             [
                 'name'     => 'Administrador General',
-                'rut'      => '11.111.111-1',
+                'rut'      => '11111111-1',
                 'password' => Hash::make('admin123'),
             ]
         );
@@ -26,7 +26,7 @@ class UserRoleSeeder extends Seeder
             ['email' => 'digitador@lbgm.cl'],
             [
                 'name'     => 'Digitador Matrículas',
-                'rut'      => '22.222.222-2',
+                'rut'      => '22222222-2',
                 'password' => Hash::make('digitador123'),
             ]
         );
@@ -37,7 +37,7 @@ class UserRoleSeeder extends Seeder
             ['email' => 'visualizador@lbgm.cl'],
             [
                 'name'     => 'Visualizador',
-                'rut'      => '33.333.333-3',
+                'rut'      => '33333333-3',
                 'password' => Hash::make('visual123'),
             ]
         );

@@ -10,59 +10,56 @@ class StudentTestSeeder extends Seeder
     public function run(): void
     {
         $students = [
-            // Antiguos
-            [
-                'rut' => '24.111.111-1',
-                'first_name' => 'Benjamín',
-                'last_name_father' => 'Lagos',
-                'last_name_mother' => 'Muñoz',
+            ['24.111.111-1', 'Benjamín', 'Lagos', 'Muñoz', 'Masculino'],
+            ['24.111.111-2', 'Antonia', 'Vera', 'Ortiz', 'Femenino'],
+            ['24.111.111-3', 'Martín', 'Paredes', 'Guzmán', 'Masculino'],
+            ['24.111.111-4', 'Valentina', 'Salinas', 'Bravo', 'Femenino'],
+            ['24.111.111-5', 'Tomás', 'Rivas', 'Castro', 'Masculino'],
 
-                'gender' => 'Masculino',
-                'birth_date' => '2014-05-11',
-                'nationality' => 'Chilena',
-                'religion' => 'Católica',
+            ['24.111.111-6', 'Isidora', 'Alarcón', 'Díaz', 'Femenino'],
+            ['24.111.111-7', 'Sebastián', 'Araya', 'Torres', 'Masculino'],
+            ['24.111.111-8', 'Josefa', 'Carrillo', 'Morales', 'Femenino'],
+            ['24.111.111-9', 'Cristóbal', 'Navarro', 'Hernández', 'Masculino'],
+            ['24.111.112-0', 'Maite', 'Campos', 'Acuña', 'Femenino'],
 
-                'address' => 'Sector Mulpun S/N',
-                'commune' => 'Máfil',
-                'phone' => '+56924440000',
-                'emergency_phone' => '+56920000000',
+            ['26.222.222-1', 'Diego', 'Soto', 'Vidal', 'Masculino'],
+            ['26.222.222-2', 'Camila', 'Moreno', 'Bravo', 'Femenino'],
+            ['26.222.222-3', 'Tomás', 'Aguilar', 'Reyes', 'Masculino'],
+            ['26.222.222-4', 'Josefa', 'López', 'Castillo', 'Femenino'],
+            ['26.222.222-5', 'Ignacio', 'Hidalgo', 'Lara', 'Masculino'],
 
-                'indigenous_ancestry' => false,
-                'indigenous_ancestry_type' => null,
-
-                // OJO: nombres alineados a la tabla actual
-                'has_health_issues' => false,
-                'health_issues_details' => null,
-            ],
-
-            [
-                'rut' => '24.111.111-2',
-                'first_name' => 'Antonia',
-                'last_name_father' => 'Vera',
-                'last_name_mother' => 'Ortiz',
-
-                'gender' => 'Femenino',
-                'birth_date' => '2013-09-23',
-                'nationality' => 'Chilena',
-                'religion' => 'Evangélica',
-
-                'address' => 'Población Las Lumas 33',
-                'commune' => 'Máfil',
-                'phone' => '+56924440001',
-                'emergency_phone' => '+56920000001',
-
-                'indigenous_ancestry' => false,
-                'indigenous_ancestry_type' => null,
-
-                'has_health_issues' => false,
-                'health_issues_details' => null,
-            ],
-
-            
+            ['26.222.222-6', 'Florencia', 'Garrido', 'Meza', 'Femenino'],
+            ['26.222.222-7', 'Lucas', 'Ramírez', 'Oyarzo', 'Masculino'],
+            ['26.222.222-8', 'Emilia', 'Cáceres', 'Sanhueza', 'Femenino'],
+            ['26.222.222-9', 'Agustín', 'Gómez', 'Lobos', 'Masculino'],
+            ['26.222.223-0', 'Javiera', 'Pino', 'Zúñiga', 'Femenino'],
         ];
 
-        foreach ($students as $s) {
-            Student::firstOrCreate(['rut' => $s['rut']], $s);
+        foreach ($students as $i => $s) {
+
+            Student::firstOrCreate(
+                ['rut' => $s[0]],
+                [
+                    'first_name' => $s[1],
+                    'last_name_father' => $s[2],
+                    'last_name_mother' => $s[3],
+                    'gender' => $s[4],
+                    'birth_date' => now()->subYears(8 + ($i % 6))->subDays(rand(10,200)),
+                    'nationality' => 'Chilena',
+                    'religion' => ['Católica','Evangélica','Ninguna'][rand(0,2)],
+
+                    'address' => 'Calle Principal #' . rand(100,999),
+                    'commune' => 'Máfil',
+                    'phone' => '+569' . rand(30000000,39999999),
+                    'emergency_phone' => '+569' . rand(40000000,49999999),
+
+                    'indigenous_ancestry' => rand(0,1),
+                    'indigenous_ancestry_type' => null,
+
+                    'has_health_issues' => rand(0,1),
+                    'health_issues_details' => null,
+                ]
+            );
         }
     }
 }

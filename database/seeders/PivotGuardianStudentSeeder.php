@@ -15,12 +15,18 @@ class PivotGuardianStudentSeeder extends Seeder
 
         foreach ($students as $i => $student) {
 
-            $tit = $guardians[$i % $guardians->count()];
-            $sup = $guardians[($i + 1) % $guardians->count()];
+            // Titular
+            $titular = $guardians[$i % $guardians->count()];
 
             $student->guardians()->syncWithoutDetaching([
-                $tit->id => ['lives_with' => true],
-                $sup->id => ['lives_with' => false],
+                $titular->id => ['lives_with' => true]
+            ]);
+
+            // Suplente
+            $suplente = $guardians[($i + 1) % $guardians->count()];
+
+            $student->guardians()->syncWithoutDetaching([
+                $suplente->id => ['lives_with' => false]
             ]);
         }
     }

@@ -12,26 +12,33 @@ class EnrollmentTestSeeder extends Seeder
 {
     public function run(): void
     {
-        $digitador = User::where('email','digitador@lbgm.cl')->first();
-        $students  = Student::all();
-        $courses   = Course::where('school_year', 2026)->get();
+        $digitador = User::where('email', 'digitador@lbgm.cl')->first();
+        $students = Student::all();
 
-        foreach ($students as $i => $s) {
+        $courses2026 = Course::where('school_year', 2026)->get();
 
-            $tit = $s->guardians()->first();
-            $sup = $s->guardians()->skip(1)->first();
+        foreach ($students as $i => $student) {
 
-            Enrollment::firstOrCreate([
-                'student_id' => $s->id,
-                'school_year' => 2026,
-            ],[
-                'course_id' => $courses[$i % $courses->count()]->id,
-                'guardian_titular_id' => $tit?->id,
-                'guardian_suplente_id' => $sup?->id,
-                'user_id' => $digitador?->id,
-                'status' => 'Pending',
-                'enrollment_type' => 'Returning Student',
-            ]);
+            $guardians = $student->guardians;
+
+            $titular = $guardians[0];
+            $suplente = $guardians[1];
+
+            Enrollment::firstOrCreate(
+                [
+                    'student_id' => $student->id,
+                    'school_year' => 2026,
+                ],
+                [
+                    'course_id' => $courses2026[$i % $courses2026->count()]->id,
+                    'guardian_titular_id' => $titular->id,
+                    'guardian_suplente_id' => $suplente->id,
+
+                    'user_id' => $digitador->id,
+                    'status' => $i % 3 === 0 ? 'Confirmed' : 'Pending',
+                    'enrollment_type' => $i % 2 === 0 ? 'Returning Student' : 'New Student',
+                ]
+            );
         }
     }
 }
