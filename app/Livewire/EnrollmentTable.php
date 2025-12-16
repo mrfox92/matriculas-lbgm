@@ -15,8 +15,9 @@ class EnrollmentTable extends Component
     public $courseId = '';
     public $status = '';
     public $search = '';
+    public $enrollmentType = '';
 
-    protected $queryString = ['schoolYear', 'courseId', 'status', 'search'];
+    protected $queryString = ['schoolYear', 'courseId', 'status', 'search', 'enrollmentType'];
 
     public function mount()
     {
@@ -41,11 +42,17 @@ class EnrollmentTable extends Component
             $query->status($this->status);
         }
 
+        if ($this->enrollmentType) {
+            $query->where('enrollment_type', $this->enrollmentType);
+        }
+
         if ($this->search) {
             $query->searchStudent($this->search);
         }
 
-        $enrollments = $query->orderBy('id', 'desc')->paginate(10);
+        $enrollments = $query->orderByRaw("enrollment_type = 'New Student' DESC")
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
         return view('livewire.enrollment-table', [
             'enrollments' => $enrollments,

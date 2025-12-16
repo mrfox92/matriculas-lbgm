@@ -13,16 +13,19 @@ class EnrollmentTestSeeder extends Seeder
     public function run(): void
     {
         $digitador = User::where('email', 'digitador@lbgm.cl')->first();
-        $students = Student::all();
-
+        $students = Student::with('guardians')->get();
         $courses2026 = Course::where('school_year', 2026)->get();
 
         foreach ($students as $i => $student) {
 
             $guardians = $student->guardians;
 
+            if ($guardians->count() < 1) {
+                continue;
+            }
+
             $titular = $guardians[0];
-            $suplente = $guardians[1];
+            $suplente = $guardians[1] ?? null;
 
             Enrollment::firstOrCreate(
                 [
@@ -32,13 +35,16 @@ class EnrollmentTestSeeder extends Seeder
                 [
                     'course_id' => $courses2026[$i % $courses2026->count()]->id,
                     'guardian_titular_id' => $titular->id,
-                    'guardian_suplente_id' => $suplente->id,
+                    'guardian_suplente_id' => optional($suplente)->id,
 
                     'user_id' => $digitador->id,
-                    'status' => $i % 3 === 0 ? 'Confirmed' : 'Pending',
-                    'enrollment_type' => $i % 2 === 0 ? 'Returning Student' : 'New Student',
+
+                    // antiguos cargados masivamente
+                    'enrollment_type' => 'Returning Student',
+                    'status' => 'Pending',
                 ]
             );
+
         }
     }
 }

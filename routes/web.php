@@ -42,6 +42,10 @@ Route::middleware(['auth', 'active'])->group(function () {
 
         Route::get('/nueva', [EnrollmentController::class, 'create'])
             ->name('enrollments.create');
+        
+        Route::get('/nuevos', function () {
+            return view('enrollments.new.index');
+        })->name('enrollments.new.index');
 
         Route::get('/{enrollment}/editar', [EnrollmentController::class, 'edit'])
             ->name('enrollments.edit');

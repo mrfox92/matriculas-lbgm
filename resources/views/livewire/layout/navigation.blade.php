@@ -52,6 +52,14 @@ new class extends Component
                         {{ __('Nueva Matrícula') }}
                     </x-nav-link>
 
+                    <!-- Matrículas Nuevas -->
+                    <x-nav-link :href="route('enrollments.new.index')"
+                                :active="request()->routeIs('enrollments.new.*')"
+                                wire:navigate>
+                        {{ __('Matrículas nuevas') }}
+                    </x-nav-link>
+
+
                     <!-- ========================================= -->
                     <!-- USUARIOS (ADMIN) - DROPDOWN DESPLEGABLE -->
                     <!-- ========================================= -->

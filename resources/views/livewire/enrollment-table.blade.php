@@ -1,7 +1,7 @@
 <div class="space-y-4">
 
     {{-- Filtros --}}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div>
             <label class="block text-sm font-medium">Año</label>
             <input type="number" wire:model="schoolYear" class="w-full border rounded px-2 py-1">
@@ -20,6 +20,17 @@
                 @endforeach
             </select>
         </div>
+
+        <div>
+            <label class="block text-sm font-medium">Tipo alumno</label>
+            <select wire:model="enrollmentType"
+                    class="w-full border rounded px-2 py-1">
+                <option value="">Todos</option>
+                <option value="New Student">Nuevo</option>
+                <option value="Returning Student">Antiguo</option>
+            </select>
+        </div>
+
 
         <div>
             <label class="block text-sm font-medium">Estado</label>
@@ -48,6 +59,7 @@
                     <th class="px-2 py-1 border">RUT</th>
                     <th class="px-2 py-1 border">Curso</th>
                     <th class="px-2 py-1 border">Apoderado titular</th>
+                    <th class="px-2 py-1 border">Tipo alumno</th>
                     <th class="px-2 py-1 border">Estado</th>
                     <th class="px-2 py-1 border">Acciones</th>
                 </tr>
@@ -69,6 +81,18 @@
                         </td>
                         <td class="px-2 py-1 border">
                             {{ optional($enr->guardianTitular)->full_name }}
+                        </td>
+                        <!-- Tipo alumno -->
+                         <td class="px-2 py-1 border">
+                            @if ($enr->enrollment_type === 'New Student')
+                                <span class="px-2 py-1 rounded bg-blue-100 text-blue-800 text-xs font-semibold">
+                                    Nuevo
+                                </span>
+                            @else
+                                <span class="px-2 py-1 rounded bg-gray-100 text-gray-800 text-xs font-semibold">
+                                    Antiguo
+                                </span>
+                            @endif
                         </td>
                         <!-- Estado proceso matricula -->
                         <td>
