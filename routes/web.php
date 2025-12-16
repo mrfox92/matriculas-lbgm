@@ -47,6 +47,9 @@ Route::middleware(['auth', 'active'])->group(function () {
             return view('enrollments.new.index');
         })->name('enrollments.new.index');
 
+        Route::get('/antiguos', [EnrollmentController::class, 'returning'])
+            ->name('enrollments.returning.index');
+
         Route::get('/{enrollment}/editar', [EnrollmentController::class, 'edit'])
             ->name('enrollments.edit');
 

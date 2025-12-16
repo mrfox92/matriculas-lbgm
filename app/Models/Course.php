@@ -27,4 +27,25 @@ class Course extends Model
     {
         return $query->where('school_year', $year);
     }
+
+    //  obtener nombre de curso completo
+    public function getFullNameAttribute(): string
+    {
+        if (!$this->gradeLevel) {
+            return 'Por asignar';
+        }
+
+        $name = $this->gradeLevel->name;
+
+        if ($this->letter) {
+            $name .= ' ' . $this->letter;
+        }
+
+        if ($this->specialty) {
+            $name .= ' - ' . $this->specialty;
+        }
+
+        return $name;
+    }
+
 }

@@ -3,8 +3,7 @@
 use App\Livewire\Actions\Logout;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     public function logout(Logout $logout): void
     {
         $logout();
@@ -32,41 +31,31 @@ new class extends Component
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
 
                     <!-- Inicio -->
-                    <x-nav-link :href="route('dashboard')" 
-                                :active="request()->routeIs('dashboard')" 
-                                wire:navigate>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Inicio') }}
                     </x-nav-link>
 
                     <!-- Matrículas -->
-                    <x-nav-link :href="route('enrollments.index')" 
-                                :active="request()->routeIs('enrollments.*')" 
-                                wire:navigate>
+                    <x-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.index')" wire:navigate>
                         {{ __('Matrículas') }}
                     </x-nav-link>
 
-                    <!-- Nueva Matrícula -->
-                    <x-nav-link :href="route('enrollments.create')" 
-                                :active="request()->routeIs('enrollments.create')" 
-                                wire:navigate>
-                        {{ __('Nueva Matrícula') }}
+                    <!-- Matrículas Nuevas -->
+                    <x-nav-link :href="route('enrollments.new.index')" :active="request()->routeIs('enrollments.new.*')" wire:navigate>
+                        {{ __('Alumnos nuevos') }}
                     </x-nav-link>
 
-                    <!-- Matrículas Nuevas -->
-                    <x-nav-link :href="route('enrollments.new.index')"
-                                :active="request()->routeIs('enrollments.new.*')"
-                                wire:navigate>
-                        {{ __('Matrículas nuevas') }}
+                    <x-nav-link :href="route('enrollments.returning.index')" :active="request()->routeIs('enrollments.returning.*')">
+                        {{ __('Alumnos antiguos') }}
                     </x-nav-link>
+
 
 
                     <!-- ========================================= -->
                     <!-- USUARIOS (ADMIN) - DROPDOWN DESPLEGABLE -->
                     <!-- ========================================= -->
-                    @if(auth()->user()->hasRole('admin'))
-                        <x-nav-link :href="route('users.index')" 
-                                    :active="request()->routeIs('users.*')" 
-                                    wire:navigate>
+                    @if (auth()->user()->hasRole('admin'))
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" wire:navigate>
                             {{ __('Usuarios') }}
                         </x-nav-link>
                     @endif
@@ -78,24 +67,25 @@ new class extends Component
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}"
-                                 x-text="name"
-                                 x-on:profile-updated.window="name = $event.detail.name">
+                        <button
+                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name"
+                                x-on:profile-updated.window="name = $event.detail.name">
                             </div>
 
                             <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
-                                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a 1 1 0 111.414 1.414l-4 4a 1 1 0 01-1.414 0l-4-4a 1 1 0 010-1.414z"
-                                          clip-rule="evenodd" />
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a 1 1 0 111.414 1.414l-4 4a 1 1 0 01-1.414 0l-4-4a 1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
                                 </svg>
                             </div>
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')" wire:navigate>
+                        <x-dropdown-link :href="route('profile')">
                             {{ __('Mi Perfil') }}
                         </x-dropdown-link>
 
@@ -114,19 +104,14 @@ new class extends Component
             <!-- Hamburger (responsive) -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
-                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500
+                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500
                                hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }"
-                              class="inline-flex"
-                              stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }"
-                              class="hidden"
-                              stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
@@ -135,36 +120,23 @@ new class extends Component
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
 
         <div class="pt-2 pb-3 space-y-1">
 
             <!-- Inicio -->
-            <x-responsive-nav-link :href="route('dashboard')" 
-                                   :active="request()->routeIs('dashboard')" 
-                                   wire:navigate>
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Inicio') }}
             </x-responsive-nav-link>
 
             <!-- Matrículas -->
-            <x-responsive-nav-link :href="route('enrollments.index')" 
-                                   :active="request()->routeIs('enrollments.*')" 
-                                   wire:navigate>
+            <x-responsive-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.index')" wire:navigate>
                 {{ __('Matrículas') }}
             </x-responsive-nav-link>
 
-            <!-- Nueva Matrícula -->
-            <x-responsive-nav-link :href="route('enrollments.create')" 
-                                   :active="request()->routeIs('enrollments.create')" 
-                                   wire:navigate>
-                {{ __('Nueva Matrícula') }}
-            </x-responsive-nav-link>
-
             <!-- Usuarios Responsive (solo admin) -->
-            @if(auth()->user()->hasRole('admin'))
-                <x-responsive-nav-link :href="route('users.index')" 
-                                       :active="request()->routeIs('users.*')" 
-                                       wire:navigate>
+            @if (auth()->user()->hasRole('admin'))
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" wire:navigate>
                     {{ __('Usuarios') }}
                 </x-responsive-nav-link>
             @endif
@@ -174,19 +146,17 @@ new class extends Component
         <div class="pt-4 pb-1 border-t border-gray-200">
 
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800" 
-                     x-data="{{ json_encode(['name' => auth()->user()->name]) }}" 
-                     x-text="name" 
-                     x-on:profile-updated.window="name = $event.detail.name">
+                <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name"
+                    x-on:profile-updated.window="name = $event.detail.name">
                 </div>
                 <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
             </div>
 
             <div class="mt-3 space-y-1">
 
-                <x-responsive-nav-link :href="route('profile')" wire:navigate>
+                <x-dropdown-link :href="route('profile')">
                     {{ __('Mi Perfil') }}
-                </x-responsive-nav-link>
+                </x-dropdown-link>
 
                 <!-- Cerrar Sesion -->
                 <form method="POST" action="{{ route('logout') }}" class="w-full">

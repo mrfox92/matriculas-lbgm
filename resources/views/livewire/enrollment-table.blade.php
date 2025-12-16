@@ -11,11 +11,15 @@
             <label class="block text-sm font-medium">Curso</label>
             <select wire:model="courseId" class="w-full border rounded px-2 py-1">
                 <option value="">Todos</option>
-                @foreach($courses as $course)
+                @foreach ($courses as $course)
                     <option value="{{ $course->id }}">
                         {{ $course->gradeLevel->name }}
-                        @if($course->letter) {{ $course->letter }} @endif
-                        @if($course->specialty) - {{ $course->specialty }} @endif
+                        @if ($course->letter)
+                            {{ $course->letter }}
+                        @endif
+                        @if ($course->specialty)
+                            - {{ $course->specialty }}
+                        @endif
                     </option>
                 @endforeach
             </select>
@@ -23,8 +27,7 @@
 
         <div>
             <label class="block text-sm font-medium">Tipo alumno</label>
-            <select wire:model="enrollmentType"
-                    class="w-full border rounded px-2 py-1">
+            <select wire:model="enrollmentType" class="w-full border rounded px-2 py-1">
                 <option value="">Todos</option>
                 <option value="New Student">Nuevo</option>
                 <option value="Returning Student">Antiguo</option>
@@ -44,8 +47,7 @@
 
         <div>
             <label class="block text-sm font-medium">Buscar por nombre / RUT</label>
-            <input type="text" wire:model.debounce.500ms="search"
-                   class="w-full border rounded px-2 py-1">
+            <input type="text" wire:model.debounce.500ms="search" class="w-full border rounded px-2 py-1">
         </div>
     </div>
 
@@ -71,19 +73,14 @@
                         <td class="px-2 py-1 border">{{ $enr->student->full_name }}</td>
                         <td class="px-2 py-1 border">{{ $enr->student->rut }}</td>
                         <td class="px-2 py-1 border">
-                            @if($enr->course)
-                                {{ $enr->course->gradeLevel->name }}
-                                @if($enr->course->letter) {{ $enr->course->letter }} @endif
-                                @if($enr->course->specialty) - {{ $enr->course->specialty }} @endif
-                            @else
-                                <span class="text-gray-400">Por asignar</span>
-                            @endif
+                            {{ $enr->course?->full_name ?? 'Por asignar' }}
                         </td>
+
                         <td class="px-2 py-1 border">
                             {{ optional($enr->guardianTitular)->full_name }}
                         </td>
                         <!-- Tipo alumno -->
-                         <td class="px-2 py-1 border">
+                        <td class="px-2 py-1 border">
                             @if ($enr->enrollment_type === 'New Student')
                                 <span class="px-2 py-1 rounded bg-blue-100 text-blue-800 text-xs font-semibold">
                                     Nuevo
@@ -96,7 +93,7 @@
                         </td>
                         <!-- Estado proceso matricula -->
                         <td>
-                            @if($enr->status === 'Confirmed')
+                            @if ($enr->status === 'Confirmed')
                                 <span class="px-2 py-1 rounded bg-green-100 text-green-800">Confirmada</span>
                             @elseif($enr->status === 'Pending')
                                 <span class="px-2 py-1 rounded bg-yellow-100 text-yellow-800">Pendiente</span>
@@ -106,10 +103,9 @@
                         </td>
 
                         <td class="px-2 py-1 border space-x-2">
-                            <a href="{{ route('enrollments.edit', $enr) }}"
-                               class="text-blue-600 underline">Editar</a>
-                            <a href="{{ route('enrollments.pdf', $enr) }}"
-                               class="text-green-600 underline" target="_blank">
+                            <a href="{{ route('enrollments.edit', $enr) }}" class="text-blue-600 underline">Editar</a>
+                            <a href="{{ route('enrollments.pdf', $enr) }}" class="text-green-600 underline"
+                                target="_blank">
                                 PDF
                             </a>
                         </td>

@@ -39,7 +39,7 @@
             </a>
 
             {{-- TARJETA ALUMNO ANTIGUO --}}
-            <a href="{{ route('dashboard') }}"
+            <a href="{{ route('enrollments.returning.index') }}"
                class="block bg-green-50 border border-green-200 rounded-2xl shadow-lg p-10
                       transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
 

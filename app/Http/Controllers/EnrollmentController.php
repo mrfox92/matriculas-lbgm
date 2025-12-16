@@ -38,6 +38,12 @@ class EnrollmentController extends Controller
         return view('enrollments.edit', compact('enrollment'));
     }
 
+    public function returning()
+    {
+        return view('enrollments.returning.index');
+    }
+
+
     public function pdf(Enrollment $enrollment)
     {
         $enrollment->load([
