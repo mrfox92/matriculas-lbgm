@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\Guardian;
 use App\Models\Course;
 use App\Models\AuditLog;
+use Livewire\Attributes\On;
 
 class EnrollmentEditForm extends Component
 {
@@ -71,6 +72,55 @@ class EnrollmentEditForm extends Component
 
     public $guardianTitular;
     public $guardianSuplente;
+    /* ----------------------------
+       MODAL SELECCIONADO
+       ---------------------------- */
+    public string $guardianSelecting = ''; // 'titular' | 'suplente'
+    /* ----------------------------
+       MENSAJES DE ERROR
+       ---------------------------- */
+    public string $guardianMessage = '';
+    public string $guardianMessageType = ''; // success | error
+
+    /* ----------------------------
+        EVENTO LISTENER
+   ---------------------------- */
+   #[On('guardian-selected')]
+public function handleGuardianSelected(array $data): void
+{
+    $guardianId = (int) ($data['guardian_id'] ?? 0);
+
+    // usa el que viene del modal si existe, si no, el contexto guardado
+    $type = $data['type'] ?? $this->guardianSelecting;
+
+    // Limpia mensaje previo
+    $this->guardianMessage = '';
+    $this->guardianMessageType = '';
+
+    $titularId  = $this->guardian_titular_id ? (int) $this->guardian_titular_id : null;
+    $suplenteId = $this->guardian_suplente_id ? (int) $this->guardian_suplente_id : null;
+
+    // Validación cruzada (con ints)
+    if (
+        ($type === 'titular'  && $suplenteId !== null && $guardianId === $suplenteId) ||
+        ($type === 'suplente' && $titularId  !== null && $guardianId === $titularId)
+    ) {
+        $this->guardianMessage = 'El apoderado titular y suplente no pueden ser la misma persona.';
+        $this->guardianMessageType = 'error';
+        return;
+    }
+
+    if ($type === 'titular') {
+        $this->guardian_titular_id = $guardianId;
+        $this->guardianTitular = Guardian::find($guardianId);
+    } elseif ($type === 'suplente') {
+        $this->guardian_suplente_id = $guardianId;
+        $this->guardianSuplente = Guardian::find($guardianId);
+    }
+
+    $this->guardianMessage = 'Apoderado actualizado correctamente.';
+    $this->guardianMessageType = 'success';
+}
 
     /* ----------------------------
        REGLAS DE VALIDACION
@@ -86,6 +136,14 @@ class EnrollmentEditForm extends Component
         ];
     }
 
+    public function openGuardianModal(string $type): void
+    {
+        $this->guardianSelecting = $type;
+
+        $this->dispatch('open-guardian-modal', [
+            'type' => $type,
+        ]);
+    }
 
 
     /* ----------------------------
@@ -93,6 +151,9 @@ class EnrollmentEditForm extends Component
        ---------------------------- */
     public function mount(Enrollment $enrollment)
     {
+        $this->guardianMessage = '';
+        $this->guardianMessageType = '';
+
         $this->enrollment = $enrollment;
         $this->fillFromModels();
     }
@@ -153,21 +214,6 @@ class EnrollmentEditForm extends Component
 
         $this->coexistence_manual_version = $this->enrollment->coexistence_manual_version;
 
-    }
-
-
-    /* ----------------------------
-       EVENTO DESDE MODALES
-       ---------------------------- */
-    public function setGuardian($guardianId, $type)
-    {
-        if ($type === 'titular') {
-            $this->guardian_titular_id = $guardianId;
-            $this->guardianTitular = Guardian::find($guardianId);
-        } else {
-            $this->guardian_suplente_id = $guardianId;
-            $this->guardianSuplente = Guardian::find($guardianId);
-        }
     }
 
 

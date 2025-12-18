@@ -5,49 +5,60 @@ namespace App\Livewire;
 use App\Models\Guardian;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Illuminate\Support\Collection;
 
 class GuardianSearchModal extends Component
 {
     public bool $open = false;
-    public string $type = 'titular'; // titular | suplente
+    public string $type = 'titular'; // CONTEXTO
     public string $search = '';
-    public $results = [];
+    public Collection $results;
+
+    public function mount(): void
+    {
+        $this->results = collect();
+    }
 
     #[On('open-guardian-modal')]
     public function openModal(array $data = []): void
     {
-        // Si no viene nada, por defecto 'titular'
+        // FIJA CONTEXTO DESDE EnrollmentEditForm
         $this->type = $data['type'] ?? 'titular';
-        $this->open = true;
 
-        // Opcional, para limpiar búsqueda anterior
-        $this->reset('search', 'results');
+        $this->reset('search');
+        $this->results = collect();
+        $this->open = true;
     }
 
-    public function updatedSearch(): void
+    public function searchGuardians(): void
     {
-        $term = trim($this->search);
+        $value = trim($this->search);
 
-        if ($term === '') {
-            $this->results = [];
+        if (strlen($value) < 2) {
+            $this->results = collect();
             return;
         }
 
         $this->results = Guardian::query()
-            ->where('rut', 'like', "%{$term}%")
-            ->orWhere('last_name_father', 'like', "%{$term}%")
-            ->orWhere('first_name', 'like', "%{$term}%")
-            ->limit(30)
+            ->where('rut', 'like', "%{$value}%")
+            ->orWhere('first_name', 'like', "%{$value}%")
+            ->orWhere('last_name_father', 'like', "%{$value}%")
+            ->orWhere('last_name_mother', 'like', "%{$value}%")
+            ->orderBy('last_name_father')
+            ->limit(15)
             ->get();
     }
 
     public function selectGuardian(int $id): void
     {
+        // ENVÍA ID + CONTEXTO
         $this->dispatch('guardian-selected', [
-            'id'   => $id,
+            'guardian_id' => $id,
             'type' => $this->type,
         ]);
 
+        $this->reset('search');
+        $this->results = collect();
         $this->open = false;
     }
 

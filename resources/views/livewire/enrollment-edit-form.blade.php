@@ -186,6 +186,15 @@
         </select>
     </div>
 
+    {{-- MENSAJES DE APODERADOS --}}
+    @if ($guardianMessage)
+        <div
+            class="mb-4 rounded-lg p-3 text-sm
+        {{ $guardianMessageType === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}">
+            {{ $guardianMessage }}
+        </div>
+    @endif
+
 
 
     {{-- ============================================================
@@ -206,8 +215,7 @@
                         <small>{{ $guardianTitular->rut }}</small>
                     </div>
 
-                    <button wire:click="$dispatch('open-guardian-modal', { type: 'titular' })"
-                        class="text-blue-600 font-semibold">
+                    <button wire:click="openGuardianModal('titular')" class="text-blue-600 font-semibold">
                         Cambiar
                     </button>
                 </div>
@@ -230,8 +238,7 @@
                         <small>{{ $guardianSuplente->rut }}</small>
                     </div>
 
-                    <button wire:click="$dispatch('open-guardian-modal', { type: 'suplente' })"
-                        class="text-blue-600 font-semibold">
+                    <button wire:click="openGuardianModal('suplente')" class="text-blue-600 font-semibold">
                         Cambiar
                     </button>
                 </div>
@@ -309,21 +316,21 @@
 
             <label class="flex gap-2">
                 <input type="checkbox" wire:model="accept_school_rules" class="mt-1 rounded border-gray-300">
-                    Declaro haber leído y aceptado el
-                    <strong>Reglamento Interno del Establecimiento</strong>.
+                Declaro haber leído y aceptado el
+                <strong>Reglamento Interno del Establecimiento</strong>.
             </label>
 
             <label class="flex gap-2">
                 <input type="checkbox" wire:model="accept_coexistence_rules" class="mt-1 rounded border-gray-300">
-                    Declaro haber leído el
-                    Manual de Convivencia Escolar 2026.
+                Declaro haber leído el
+                Manual de Convivencia Escolar 2026.
             </label>
 
             <label class="flex gap-2">
                 <input type="checkbox" wire:model="accept_terms_conditions" class="mt-1 rounded border-gray-300">
-                    Acepto los
-                    <strong>términos y condiciones</strong>
-                    del proceso de matrícula.
+                Acepto los
+                <strong>términos y condiciones</strong>
+                del proceso de matrícula.
             </label>
 
             {{-- Errores --}}
