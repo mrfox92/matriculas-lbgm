@@ -17,11 +17,18 @@ class Enrollment extends Model
         'consent_extra_activities',
         'consent_field_trips', 'consent_photos',
         'consent_school_bus', 'consent_internet',
-        'internal_enrollment_number', 'notes'
+        'internal_enrollment_number', 'notes',
+        // nuevo: Reglamentos y términos
+        'accept_school_rules',
+        'accept_coexistence_rules',
+        'accept_terms_conditions',
+        'coexistence_manual_version',
+        'accepted_at',
     ];
 
     protected $casts = [
         'enrollment_date' => 'date',
+        'accepted_at' => 'datetime',
         'is_repeating' => 'boolean',
         'has_health_issues' => 'boolean',
         'is_pie_student' => 'boolean',
@@ -31,6 +38,10 @@ class Enrollment extends Model
         'consent_photos' => 'boolean',
         'consent_school_bus' => 'boolean',
         'consent_internet' => 'boolean',
+        // legales
+        'accept_school_rules' => 'boolean',
+        'accept_coexistence_rules' => 'boolean',
+        'accept_terms_conditions' => 'boolean',
     ];
 
     /* -------------------- RELACIONES -------------------- */

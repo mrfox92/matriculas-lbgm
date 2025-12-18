@@ -1,34 +1,41 @@
 {{-- resources/views/pdf/enrollment.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Matrícula {{ $enrollment->student->full_name }}</title>
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 11px;
+            font-size: 10px;
         }
+
         .section-title {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
-            margin-top: 18px;
-            margin-bottom: 6px;
+            margin-top: 10px;
+            margin-bottom: 4px;
             border-bottom: 1px solid #000;
             padding-bottom: 2px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
-        td, th {
+
+        td,
+        th {
             border: 1px solid #444;
-            padding: 4px 6px;
+            padding: 3px 5px;
         }
+
         .no-border td {
             border: none !important;
         }
+
         .signature-box {
             border: 1px solid #000;
             height: 60px;
@@ -36,6 +43,7 @@
         }
     </style>
 </head>
+
 <body>
 
     {{-- ENCABEZADO --}}
@@ -57,7 +65,7 @@
     {{-- ============================================================
          SECCIÓN 1: DATOS DEL ESTUDIANTE
          ============================================================ --}}
-    <div class="section-title">1. DATOS DEL ESTUDIANTE</div>
+    <div class="section-title">1. INDIVIDUALIZACIÓN DEL ALUMNO</div>
 
     <table>
         <tr>
@@ -70,15 +78,16 @@
             <td><strong>Género:</strong> {{ $student->gender }}</td>
         </tr>
         <tr>
-            <td><strong>Fecha nacimiento:</strong> {{ $student->birth_date }}</td>
+            <td><strong>Fecha nacimiento:</strong>
+                {{ \Illuminate\Support\Carbon::parse($student->birth_date)->format('d/m/Y') }}</td>
             <td><strong>Nacionalidad:</strong> {{ $student->nationality }}</td>
             <td><strong>Religión:</strong> {{ $student->religion }}</td>
         </tr>
 
         @if ($student->religion === 'Otra')
-        <tr>
-            <td colspan="3"><strong>Especificar religión:</strong> {{ $student->religion_other }}</td>
-        </tr>
+            <tr>
+                <td colspan="3"><strong>Especificar religión:</strong> {{ $student->religion_other }}</td>
+            </tr>
         @endif
 
         <tr>
@@ -99,6 +108,10 @@
         <tr>
             <td><strong>Problemas de salud:</strong> {{ $student->has_health_issues ? 'Sí' : 'No' }}</td>
             <td colspan="2"><strong>Detalle:</strong> {{ $student->health_issues_details }}</td>
+        </tr>
+        <tr>
+            <td><strong>Alumno PIE:</strong> {{ $enrollment->is_pie_student ? 'SI' : 'NO' }}</td>
+            <td colspan="2"><strong>Necesita almuerzo:</strong> {{ $enrollment->needs_lunch ? 'SI' : 'NO' }}</td>
         </tr>
     </table>
 
@@ -167,55 +180,170 @@
                 <strong>¿Con quién vive?</strong> {{ $enrollment->lives_with }}
             </td>
         </tr>
-        <tr>
-            <td><strong>Alumno PIE:</strong> {{ $enrollment->is_pie_student ? 'Sí' : 'No' }}</td>
-            <td><strong>Necesita almuerzo:</strong> {{ $enrollment->needs_lunch ? 'Sí' : 'No' }}</td>
-        </tr>
     </table>
 
 
     {{-- ============================================================
          SECCIÓN 5: AUTORIZACIONES
          ============================================================ --}}
-    <div class="section-title">5. AUTORIZACIONES</div>
+    <h3 style="margin-top: 10px;">AUTORIZACIONES</h3>
 
-    <table>
+    <table width="100%" cellpadding="6" cellspacing="0" border="1">
         <tr>
-            <td><strong>Actividades extraescolares:</strong> {{ $enrollment->consent_extra_activities ? 'Sí' : 'No' }}</td>
+            <td width="85%">
+                Autorizo a mi hijo/a a participar en actividades extra-programáticas y
+                extra-escolares dentro y fuera del establecimiento.
+            </td>
+            <td width="15%" align="center">
+                {{ $enrollment->consent_extra_activities ? 'SI' : 'NO' }}
+            </td>
         </tr>
+
         <tr>
-            <td><strong>Fotografías pedagógicas:</strong> {{ $enrollment->consent_photos ? 'Sí' : 'No' }}</td>
+            <td>
+                Autorizo a mi hijo/a a ser fotografiado/a y/o grabado/a para fines
+                pedagógicos e institucionales.
+            </td>
+            <td align="center">
+                {{ $enrollment->consent_photos ? 'SI' : 'NO' }}
+            </td>
         </tr>
+
         <tr>
-            <td><strong>Bus de acercamiento:</strong> {{ $enrollment->consent_school_bus ? 'Sí' : 'No' }}</td>
+            <td>
+                Autorizo el traslado del estudiante en buses de acercamiento escolar.
+            </td>
+            <td align="center">
+                {{ $enrollment->consent_school_bus ? 'SI' : 'NO' }}
+            </td>
         </tr>
+
         <tr>
-            <td><strong>Uso de internet:</strong> {{ $enrollment->consent_internet ? 'Sí' : 'No' }}</td>
+            <td>
+                Autorizo el uso de recursos digitales e internet con fines educativos.
+            </td>
+            <td align="center">
+                {{ $enrollment->consent_internet ? 'SI' : 'NO' }}
+            </td>
         </tr>
     </table>
+
+    {{-- ============================================================
+         SECCIÓN 5: REGLAMENTO Y MANUAL DE CONVIVENCIA
+         ============================================================ --}}
+
+    <h3 style="margin-bottom: 10px;">
+        REGLAMENTO Y CONVIVENCIA ESCOLAR
+    </h3>
+
+    <p>
+        El/la apoderado/a declara haber leído y aceptado los reglamentos
+        institucionales vigentes para el año escolar {{ $enrollment->school_year }}.
+    </p>
+
+    <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <tr>
+            <td width="70%">
+                Reglamento Interno del Establecimiento
+            </td>
+            <td width="30%" align="center">
+                <strong>
+                    {{ $enrollment->accept_school_rules ? 'ACEPTADO' : 'NO ACEPTADO' }}
+                </strong>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Manual de Convivencia Escolar
+                ({{ $enrollment->coexistence_manual_version ?? 'No informado' }})
+            </td>
+            <td align="center">
+                <strong>
+                    {{ $enrollment->accept_coexistence_rules ? 'ACEPTADO' : 'NO ACEPTADO' }}
+                </strong>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Términos y condiciones del proceso de matrícula
+            </td>
+            <td align="center">
+                <strong>
+                    {{ $enrollment->accept_terms_conditions ? 'ACEPTADO' : 'NO ACEPTADO' }}
+                </strong>
+            </td>
+        </tr>
+    </table>
+
+    @if ($enrollment->accepted_at)
+        <p style="margin-top: 10px;">
+            Fecha de aceptación:
+            <strong>{{ $enrollment->accepted_at->format('d/m/Y') }}</strong>
+        </p>
+    @endif
+
 
 
     {{-- ============================================================
          FIRMAS
          ============================================================ --}}
-    <div class="section-title">6. FIRMAS</div>
+    <h3 style="margin-top: 10px;">OBSERVACIONES</h3>
 
-    <table class="no-border">
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="page-break-inside: avoid;">
         <tr>
-            <td style="width: 33%; text-align:center;">
-                <div class="signature-box"></div>
-                Apoderado titular
-            </td>
-            <td style="width: 33%; text-align:center;">
-                <div class="signature-box"></div>
-                Apoderado suplente
-            </td>
-            <td style="width: 33%; text-align:center;">
-                <div class="signature-box"></div>
-                Dirección / Inspectoría
+            <td style="
+            height: 35px;
+            padding: 6px;
+            vertical-align: top;
+        ">
+                {{ $enrollment->notes ?? '' }}
             </td>
         </tr>
     </table>
 
+    <h3 style="margin-top: 10px;">FIRMAS</h3>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="page-break-inside: avoid;">
+        <tr>
+            <td width="50%" style="padding-right: 10px;">
+                <table width="100%" border="1">
+                    <tr>
+                        <td
+                            style="
+                        height: 65px;
+                        vertical-align: bottom;
+                        text-align: center;
+                        padding-bottom: 6px;
+                        font-size: 11px;
+                    ">
+                            Nombre y firma del Apoderado(a)
+                        </td>
+                    </tr>
+                </table>
+            </td>
+
+            <td width="50%" style="padding-left: 10px;">
+                <table width="100%" border="1">
+                    <tr>
+                        <td
+                            style="
+                        height: 65px;
+                        vertical-align: bottom;
+                        text-align: center;
+                        padding-bottom: 6px;
+                        font-size: 11px;
+                    ">
+                            Nombre y firma Encargado(a) de Matrícula
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
 </body>
+
 </html>

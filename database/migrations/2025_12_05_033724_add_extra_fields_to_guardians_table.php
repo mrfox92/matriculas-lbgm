@@ -12,7 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('guardians', function (Blueprint $table) {
-            //
+
+            // Relación con el estudiante
+            $table->string('lives_with_student')
+                ->nullable()
+                ->comment('Con quién vive el estudiante');
+
+            // Último nivel cursado textual (para coincidir con ficha)
+            $table->string('last_education_level_text')
+                ->nullable()
+                ->comment('Texto libre nivel educacional (ficha manual)');
         });
     }
 

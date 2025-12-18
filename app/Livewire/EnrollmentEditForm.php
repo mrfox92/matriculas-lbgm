@@ -55,6 +55,15 @@ class EnrollmentEditForm extends Component
     public $consent_internet;
 
     /* ----------------------------
+   ACEPTACIONES LEGALES
+   ---------------------------- */
+    public bool $accept_school_rules = false;
+    public bool $accept_coexistence_rules = false;
+    public bool $accept_terms_conditions = false;
+
+    public ?string $coexistence_manual_version = null;
+
+    /* ----------------------------
        APODERADOS
        ---------------------------- */
     public $guardian_titular_id;
@@ -62,6 +71,21 @@ class EnrollmentEditForm extends Component
 
     public $guardianTitular;
     public $guardianSuplente;
+
+    /* ----------------------------
+       REGLAS DE VALIDACION
+       ---------------------------- */
+
+    protected function rules()
+    {
+        return [
+            // legales
+            'accept_school_rules' => 'accepted',
+            'accept_coexistence_rules' => 'accepted',
+            'accept_terms_conditions' => 'accepted',
+        ];
+    }
+
 
 
     /* ----------------------------
@@ -122,6 +146,13 @@ class EnrollmentEditForm extends Component
 
         $this->guardianTitular = $this->enrollment->guardianTitular;
         $this->guardianSuplente = $this->enrollment->guardianSuplente;
+        // Reglamentos y convivencia
+        $this->accept_school_rules = (bool) $this->enrollment->accept_school_rules;
+        $this->accept_coexistence_rules = (bool) $this->enrollment->accept_coexistence_rules;
+        $this->accept_terms_conditions = (bool) $this->enrollment->accept_terms_conditions;
+
+        $this->coexistence_manual_version = $this->enrollment->coexistence_manual_version;
+
     }
 
 
@@ -145,6 +176,8 @@ class EnrollmentEditForm extends Component
        ---------------------------- */
     public function save()
     {
+        // Agregadas reglas de validaciones
+        $this->validate();
         $old = $this->enrollment->toArray();
 
         // Actualizar estudiante
@@ -181,6 +214,12 @@ class EnrollmentEditForm extends Component
             'consent_photos' => $this->consent_photos,
             'consent_school_bus' => $this->consent_school_bus,
             'consent_internet' => $this->consent_internet,
+            // legales
+            'accept_school_rules' => $this->accept_school_rules,
+            'accept_coexistence_rules' => $this->accept_coexistence_rules,
+            'accept_terms_conditions' => $this->accept_terms_conditions,
+            'coexistence_manual_version' => 'Manual de Convivencia 2026',
+            'accepted_at' => now(),
             'user_id' => Auth::id(),
         ]);
 
@@ -205,11 +244,14 @@ class EnrollmentEditForm extends Component
        ---------------------------- */
     public function completeEnrollment()
     {
+        // Agregadas reglas de validaciones
+        $this->validate();
         $old = $this->enrollment->toArray();
 
         $this->enrollment->update([
             'status' => 'Confirmed',
             'user_id' => Auth::id(),
+            'accepted_at' => now(),
         ]);
 
         AuditLog::create([

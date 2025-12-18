@@ -7,10 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class Guardian extends Model
 {
     protected $fillable = [
-        'rut','first_name','last_name_father','last_name_mother',
-        'sex','birth_date','address','commune',
-        'phone','emergency_phone',
-        'education_level','occupation','work_place'
+        'rut',
+        'first_name',
+        'last_name_father',
+        'last_name_mother',
+        'gender',
+        'birth_date',
+        'address',
+        'commune',
+        'phone',
+        'emergency_phone',
+        'education_level',
+        'employment_status',
+        'work_main_place',
+        'workplace',
+        'work_phone',
+        'authorized_to_pickup',
+        'lives_with_student',
+        'last_education_level_text',
     ];
 
 

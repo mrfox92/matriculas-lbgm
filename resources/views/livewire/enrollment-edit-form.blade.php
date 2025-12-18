@@ -97,7 +97,7 @@
                 <div>
                     <label class="font-semibold">Indique el pueblo</label>
                     <input type="text" wire:model="indigenous_ancestry_type"
-                           class="w-full mt-1 px-3 py-2 border rounded-lg" placeholder="Ej: Mapuche, Huilliche…">
+                        class="w-full mt-1 px-3 py-2 border rounded-lg" placeholder="Ej: Mapuche, Huilliche…">
                 </div>
             @endif
 
@@ -137,12 +137,28 @@
             @if ($has_health_issues)
                 <div class="md:col-span-2">
                     <label class="font-semibold">Especificar</label>
-                    <textarea wire:model="health_issues_details"
-                              class="w-full mt-1 px-3 py-2 border rounded-lg"></textarea>
+                    <textarea wire:model="health_issues_details" class="w-full mt-1 px-3 py-2 border rounded-lg"></textarea>
                 </div>
             @endif
 
         </div>
+
+        {{-- SALUD DEL ESTUDIANTE --}}
+        <div class="mt-6 py-2 border-t pt-4">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" wire:model="is_pie_student" class="mt-1 rounded border-gray-300">
+                    Alumno PIE
+                </label>
+
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" wire:model="needs_lunch" class="mt-1 rounded border-gray-300">
+                    Necesita almuerzo
+                </label>
+            </div>
+        </div>
+
     </div>
 
 
@@ -159,8 +175,12 @@
             @foreach ($courses as $c)
                 <option value="{{ $c->id }}">
                     {{ $c->gradeLevel->name }}
-                    @if ($c->letter) {{ $c->letter }} @endif
-                    @if ($c->specialty) — {{ $c->specialty }} @endif
+                    @if ($c->letter)
+                        {{ $c->letter }}
+                    @endif
+                    @if ($c->specialty)
+                        — {{ $c->specialty }}
+                    @endif
                 </option>
             @endforeach
         </select>
@@ -187,13 +207,13 @@
                     </div>
 
                     <button wire:click="$dispatch('open-guardian-modal', { type: 'titular' })"
-                            class="text-blue-600 font-semibold">
+                        class="text-blue-600 font-semibold">
                         Cambiar
                     </button>
                 </div>
             @else
                 <button wire:click="$dispatch('open-guardian-modal', { type: 'titular' })"
-                        class="px-4 py-2 bg-blue-100 border rounded-lg">
+                    class="px-4 py-2 bg-blue-100 border rounded-lg">
                     Buscar / Registrar apoderado
                 </button>
             @endif
@@ -211,13 +231,13 @@
                     </div>
 
                     <button wire:click="$dispatch('open-guardian-modal', { type: 'suplente' })"
-                            class="text-blue-600 font-semibold">
+                        class="text-blue-600 font-semibold">
                         Cambiar
                     </button>
                 </div>
             @else
                 <button wire:click="$dispatch('open-guardian-modal', { type: 'suplente' })"
-                        class="px-4 py-2 bg-blue-100 border rounded-lg">
+                    class="px-4 py-2 bg-blue-100 border rounded-lg">
                     Buscar / Registrar apoderado
                 </button>
             @endif
@@ -227,7 +247,7 @@
 
 
     {{-- ============================================================
-         SECCIÓN 4: DATOS FAMILIARES
+         SECCIÓN 4: DATOS FAMILIARES QUITAR
          ============================================================ --}}
     <div class="bg-white p-6 rounded-xl shadow-sm border">
         <h2 class="text-2xl font-bold mb-4">Datos familiares</h2>
@@ -239,50 +259,94 @@
 
 
     {{-- ============================================================
-         SECCIÓN 5: SALUD Y AUTORIZACIONES
+         SECCIÓN 5: AUTORIZACIONES y DECLARACIONES
          ============================================================ --}}
-    <div class="bg-white p-6 rounded-xl shadow-sm border grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 mt-6">
+        <h3 class="font-semibold text-lg mb-4">
+            Autorizaciones y declaraciones
+        </h3>
 
-        {{-- Salud --}}
-        <div>
-            <h2 class="text-2xl font-bold mb-4">Salud</h2>
-
-            <label class="block">
-                <input type="checkbox" wire:model="is_pie_student">
-                Alumno PIE
+        <div class="space-y-3 text-sm">
+            <label class="flex gap-2">
+                <input type="checkbox" wire:model="consent_extra_activities" class="mt-1 rounded border-gray-300">
+                Autorizo a mi hijo/a a participar en actividades extra-programáticas
+                y extra-escolares dentro y fuera del establecimiento.
             </label>
 
-            <label class="block">
-                <input type="checkbox" wire:model="needs_lunch">
-                Necesita almuerzo
-            </label>
-        </div>
-
-        {{-- Autorizaciones --}}
-        <div>
-            <h2 class="text-2xl font-bold mb-4">Autorizaciones</h2>
-
-            <label class="block">
-                <input type="checkbox" wire:model="consent_extra_activities">
-                Actividades extraescolares
+            <label class="flex gap-2">
+                <input type="checkbox" wire:model="consent_photos" class="mt-1 rounded border-gray-300">
+                Autorizo el uso de fotografías y/o material audiovisual con fines
+                pedagógicos e institucionales.
             </label>
 
-            <label class="block">
-                <input type="checkbox" wire:model="consent_photos">
-                Fotografías pedagógicas
+            <label class="flex gap-2">
+                <input type="checkbox" wire:model="consent_school_bus" class="mt-1 rounded border-gray-300">
+                Autorizo el traslado del estudiante en buses de acercamiento escolar.
             </label>
 
-            <label class="block">
-                <input type="checkbox" wire:model="consent_school_bus">
-                Bus de acercamiento
-            </label>
-
-            <label class="block">
-                <input type="checkbox" wire:model="consent_internet">
-                Uso de internet
+            <label class="flex gap-2">
+                <input type="checkbox" wire:model="consent_internet" class="mt-1 rounded border-gray-300">
+                Autorizo el uso de recursos digitales e internet con fines educativos.
             </label>
         </div>
     </div>
+
+
+    {{-- ============================= --}}
+    {{-- REGLAMENTO Y CONVIVENCIA --}}
+    {{-- ============================= --}}
+    <div class="bg-white rounded-lg shadow p-6 mt-6">
+        <h3 class="text-lg font-semibold mb-4">
+            Reglamento y Convivencia Escolar
+        </h3>
+
+        <p class="text-sm text-gray-600 mb-4">
+            Para completar el proceso de matrícula, el/la apoderado/a debe declarar
+            haber leído y aceptado los reglamentos institucionales vigentes.
+        </p>
+
+        <div class="space-y-3 text-sm">
+
+            <label class="flex gap-2">
+                <input type="checkbox" wire:model="accept_school_rules" class="mt-1 rounded border-gray-300">
+                    Declaro haber leído y aceptado el
+                    <strong>Reglamento Interno del Establecimiento</strong>.
+            </label>
+
+            <label class="flex gap-2">
+                <input type="checkbox" wire:model="accept_coexistence_rules" class="mt-1 rounded border-gray-300">
+                    Declaro haber leído el
+                    Manual de Convivencia Escolar 2026.
+            </label>
+
+            <label class="flex gap-2">
+                <input type="checkbox" wire:model="accept_terms_conditions" class="mt-1 rounded border-gray-300">
+                    Acepto los
+                    <strong>términos y condiciones</strong>
+                    del proceso de matrícula.
+            </label>
+
+            {{-- Errores --}}
+            @error('accept_school_rules')
+                <p class="text-sm text-red-600">{{ $message }}</p>
+            @enderror
+
+            @error('accept_coexistence_rules')
+                <p class="text-sm text-red-600">{{ $message }}</p>
+            @enderror
+
+            @error('accept_terms_conditions')
+                <p class="text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        @if ($accepted_at ?? false)
+            <p class="text-xs text-gray-500 mt-4">
+                Reglamentos aceptados el {{ $accepted_at->format('d/m/Y H:i') }}.
+            </p>
+        @endif
+    </div>
+
 
 
 
@@ -293,23 +357,22 @@
 
         {{-- Guardar --}}
         <button wire:click="save"
-                class="px-6 py-3 bg-blue-600 text-white text-lg rounded-xl shadow hover:bg-blue-700">
+            class="px-6 py-3 bg-blue-600 text-white text-lg rounded-xl shadow hover:bg-blue-700">
             Guardar cambios
         </button>
 
         {{-- Completar matrícula --}}
         @if ($enrollment->status !== 'Confirmed')
             <button wire:click="completeEnrollment"
-                    class="px-6 py-3 bg-green-600 text-white text-lg rounded-xl shadow hover:bg-green-700">
+                class="px-6 py-3 bg-green-600 text-white text-lg rounded-xl shadow hover:bg-green-700">
                 Marcar como COMPLETADA
             </button>
         @endif
 
         {{-- PDF --}}
         @if ($enrollment->status === 'Confirmed')
-            <a href="{{ route('enrollments.pdf', $enrollment->id) }}"
-               target="_blank"
-               class="px-6 py-3 bg-gray-100 border rounded-xl shadow text-gray-700 hover:bg-gray-200">
+            <a href="{{ route('enrollments.pdf', $enrollment->id) }}" target="_blank"
+                class="px-6 py-3 bg-gray-100 border rounded-xl shadow text-gray-700 hover:bg-gray-200">
                 📄 Descargar ficha PDF
             </a>
         @endif
