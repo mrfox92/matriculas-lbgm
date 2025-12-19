@@ -9,6 +9,23 @@ class GuardianTestSeeder extends Seeder
 {
     public function run(): void
     {
+        $educationLevels = [
+            'Básica incompleta',
+            'Básica completa',
+            'Media incompleta',
+            'Media completa',
+            'Técnico nivel medio',
+            'Técnico nivel superior',
+            'Profesional',
+        ];
+
+        $employmentStatuses = [
+            'Empleado',
+            'Independiente',
+            'Dueña de casa',
+            'Cesante',
+        ];
+
         $guardians = [
             ['9.111.111-1', 'Carolina', 'Muñoz', 'Figueroa', 'Femenino'],
             ['7.222.222-2', 'Pedro', 'Soto', 'Gómez', 'Masculino'],
@@ -43,18 +60,18 @@ class GuardianTestSeeder extends Seeder
                     'last_name_father' => $g[2],
                     'last_name_mother' => $g[3],
                     'gender' => $g[4],
-                    'birth_date' => now()->subYears(rand(28,55)),
+                    'birth_date' => now()->subYears(rand(30, 60)),
 
-                    'address' => 'Villa Los Robles #' . rand(10,200),
+                    'address' => 'Villa Los Robles #' . rand(10, 300),
                     'commune' => 'Máfil',
-                    'phone' => '+569' . rand(50000000,59999999),
-                    'emergency_phone' => '+569' . rand(60000000,69999999),
+                    'phone' => '+569' . rand(50000000, 59999999),
+                    'emergency_phone' => '+569' . rand(60000000, 69999999),
 
-                    'education_level' => 'Media completa',
-                    'employment_status' => 'Empleado',
+                    'education_level' => $educationLevels[array_rand($educationLevels)],
+                    'employment_status' => $employmentStatuses[array_rand($employmentStatuses)],
                     'work_main_place' => 'Fuera del hogar',
                     'workplace' => 'Empresa Servicios',
-                    'work_phone' => '+566322' . rand(1000,9999),
+                    'work_phone' => '+566322' . rand(1000, 9999),
 
                     'authorized_to_pickup' => true,
                 ]

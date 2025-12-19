@@ -54,7 +54,13 @@ Route::middleware(['auth', 'active'])->group(function () {
             ->name('enrollments.edit');
 
         Route::get('/{enrollment}/pdf', [EnrollmentController::class, 'pdf'])
-            ->name('enrollments.pdf');
+            ->name('enrollments.pdf'); // debug
+
+        Route::get('/{enrollment}/pdf/ver', [EnrollmentController::class, 'pdfView'])
+            ->name('enrollments.pdf.view');
+
+        Route::get('/{enrollment}/pdf/descargar', [EnrollmentController::class, 'pdfDownload'])
+            ->name('enrollments.pdf.download');
     });
 
 

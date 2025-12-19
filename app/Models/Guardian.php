@@ -23,7 +23,6 @@ class Guardian extends Model
         'workplace',
         'work_phone',
         'authorized_to_pickup',
-        'lives_with_student',
         'last_education_level_text',
     ];
 

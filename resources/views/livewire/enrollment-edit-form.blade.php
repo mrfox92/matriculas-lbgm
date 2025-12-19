@@ -56,13 +56,19 @@
             {{-- Nacimiento --}}
             <div>
                 <label class="font-semibold">Fecha de nacimiento</label>
-                <input type="date" wire:model="birth_date" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <input type="date" wire:model.live="birth_date" class="w-full mt-1 px-3 py-2 border rounded-lg">
             </div>
 
             {{-- Nacionalidad --}}
             <div>
                 <label class="font-semibold">Nacionalidad</label>
-                <input type="text" wire:model="nationality" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <select wire:model="nationality" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                    <option value="">Seleccione…</option>
+                    @foreach ($nationalities as $nat)
+                        <option value="{{ $nat }}">{{ $nat }}</option>
+                    @endforeach
+                </select>
+
             </div>
 
             {{-- Religión --}}
@@ -87,19 +93,24 @@
             {{-- Pueblo originario --}}
             <div>
                 <label class="font-semibold">¿Pertenece a pueblo originario?</label>
-                <select wire:model="indigenous_ancestry" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <select wire:model.live="indigenous_ancestry" class="w-full mt-1 px-3 py-2 border rounded-lg">
                     <option value="0">No</option>
                     <option value="1">Sí</option>
                 </select>
             </div>
 
-            @if ($indigenous_ancestry)
+            @if ($indigenous_ancestry == 1)
                 <div>
-                    <label class="font-semibold">Indique el pueblo</label>
-                    <input type="text" wire:model="indigenous_ancestry_type"
-                        class="w-full mt-1 px-3 py-2 border rounded-lg" placeholder="Ej: Mapuche, Huilliche…">
+                    <label class="font-semibold">Indique el pueblo originario</label>
+                    <select wire:model.live="indigenous_ancestry_type" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                        <option value="">Seleccione…</option>
+                        @foreach ($indigenousPeoples as $pueblo)
+                            <option value="{{ $pueblo }}">{{ $pueblo }}</option>
+                        @endforeach
+                    </select>
                 </div>
             @endif
+
 
             {{-- Dirección --}}
             <div class="md:col-span-2">
@@ -128,16 +139,17 @@
             {{-- Salud --}}
             <div>
                 <label class="font-semibold">Problemas de salud</label>
-                <select wire:model="has_health_issues" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <select wire:model.live="has_health_issues" class="w-full mt-1 px-3 py-2 border rounded-lg">
                     <option value="0">No</option>
                     <option value="1">Sí</option>
                 </select>
             </div>
 
-            @if ($has_health_issues)
+            @if ($has_health_issues == 1)
                 <div class="md:col-span-2">
-                    <label class="font-semibold">Especificar</label>
-                    <textarea wire:model="health_issues_details" class="w-full mt-1 px-3 py-2 border rounded-lg"></textarea>
+                    <label class="font-semibold">Especificar problema de salud</label>
+                    <textarea wire:model.live="health_issues_details" class="w-full mt-1 px-3 py-2 border rounded-lg"
+                        placeholder="Ej: asma, alergias alimentarias, epilepsia…"></textarea>
                 </div>
             @endif
 
@@ -254,15 +266,34 @@
 
 
     {{-- ============================================================
-         SECCIÓN 4: DATOS FAMILIARES QUITAR
+         SECCIÓN 4: DATOS FAMILIARES
          ============================================================ --}}
     <div class="bg-white p-6 rounded-xl shadow-sm border">
         <h2 class="text-2xl font-bold mb-4">Datos familiares</h2>
 
         <label class="font-semibold">¿Con quién vive el estudiante?</label>
-        <input type="text" wire:model="lives_with" class="w-full mt-1 px-3 py-2 border rounded-lg">
-    </div>
+        <input type="text" wire:model="lives_with" class="w-full mt-1 px-3 py-2 border rounded-lg"
+            placeholder="Ej: ambos padres, abuelos, madre...">
 
+        <label class="font-semibold mt-4 block">
+            Parentesco del apoderado titular
+        </label>
+
+        <select wire:model.live="guardian_relationship" class="w-full mt-1 px-3 py-2 border rounded-lg">
+            <option value="">Seleccione…</option>
+            <option value="Madre">Madre</option>
+            <option value="Padre">Padre</option>
+            <option value="Otro">Otro</option>
+        </select>
+
+        @if ($guardian_relationship === 'Otro')
+            <input type="text" wire:model.live="guardian_relationship_other"
+                class="w-full mt-2 px-3 py-2 border rounded-lg"
+                placeholder="Ej: abuelo, tía, hermano mayor, tutor legal">
+        @endif
+
+
+    </div>
 
 
     {{-- ============================================================

@@ -1,14 +1,32 @@
-{{-- resources/views/pdf/enrollment.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <title>Matrícula {{ $enrollment->student->full_name }}</title>
+    <title>Ficha Matrícula {{ $student->full_name }}</title>
+
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 10px;
+            font-size: 11px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 6px;
+        }
+
+        td,
+        th {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: middle;
+        }
+
+        .no-border td {
+            border: none !important;
+            padding: 0;
         }
 
         .section-title {
@@ -20,56 +38,49 @@
             padding-bottom: 2px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 4px;
+        .small {
+            font-size: 10px;
         }
 
-        td,
-        th {
-            border: 1px solid #444;
-            padding: 3px 5px;
-        }
-
-        .no-border td {
-            border: none !important;
-        }
-
-        .signature-box {
-            border: 1px solid #000;
-            height: 60px;
-            margin-top: 10px;
+        .center {
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
 
-    {{-- ENCABEZADO --}}
+    {{-- ================= ENCABEZADO ================= --}}
     <table class="no-border">
         <tr>
-            <td style="width: 70%;">
-                <strong>ESTABLECIMIENTO:</strong> Liceo Bicentenario Gabriela Mistral<br>
-                <strong>COMUNA:</strong> Máfil<br>
-                <strong>AÑO MATRÍCULA:</strong> {{ $enrollment->school_year }}
+            <td style="width:15%; text-align:left;">
+                <img src="{{ public_path('images/logo-lbgm.png') }}" style="height:55px;">
             </td>
-            <td style="text-align: right;">
-                <strong>FICHA DE MATRÍCULA</strong><br>
-                Estudiante Nº: {{ $enrollment->id }}
+
+            <td style="width:55%; text-align:left;">
+                <strong>LICEO BICENTENARIO GABRIELA MISTRAL</strong><br>
+                Dirección: B. O’Higgins 306<br>
+                Comuna: Máfil
+            </td>
+
+            <td style="width:30%; text-align:right;">
+                <strong>FORMULARIO MATRÍCULA</strong><br>
+                Año: {{ $enrollment->school_year }}<br>
+                Curso:
+                {{ optional($enrollment->course->gradeLevel)->name }}
+                {{ $enrollment->course->letter }}
+                {{ $enrollment->course->specialty }}<br>
+                Fecha: {{ now()->format('d/m/Y') }}
             </td>
         </tr>
     </table>
 
-
-    {{-- ============================================================
-         SECCIÓN 1: DATOS DEL ESTUDIANTE
-         ============================================================ --}}
+    {{-- ================= 1. ESTUDIANTE ================= --}}
     <div class="section-title">1. INDIVIDUALIZACIÓN DEL ALUMNO</div>
 
     <table>
         <tr>
-            <td><strong>RUT:</strong> {{ $student->rut }}</td>
+            <td><strong>RUT:</strong> {{ $formatRut($student->rut) }}</td>
             <td colspan="2"><strong>Nombres:</strong> {{ $student->first_name }}</td>
         </tr>
         <tr>
@@ -78,35 +89,25 @@
             <td><strong>Género:</strong> {{ $student->gender }}</td>
         </tr>
         <tr>
-            <td><strong>Fecha nacimiento:</strong>
-                {{ \Illuminate\Support\Carbon::parse($student->birth_date)->format('d/m/Y') }}</td>
+            <td><strong>Fecha nacimiento:</strong> {{ \Carbon\Carbon::parse($student->birth_date)->format('d/m/Y') }}
+            </td>
             <td><strong>Nacionalidad:</strong> {{ $student->nationality }}</td>
             <td><strong>Religión:</strong> {{ $student->religion }}</td>
         </tr>
-
-        @if ($student->religion === 'Otra')
-            <tr>
-                <td colspan="3"><strong>Especificar religión:</strong> {{ $student->religion_other }}</td>
-            </tr>
-        @endif
-
         <tr>
-            <td><strong>Pueblo originario:</strong> {{ $student->indigenous_ancestry ? 'Sí' : 'No' }}</td>
+            <td><strong>Pueblo originario:</strong> {{ $student->indigenous_ancestry ? 'SI' : 'NO' }}</td>
             <td colspan="2"><strong>Detalle:</strong> {{ $student->indigenous_ancestry_type }}</td>
         </tr>
-
         <tr>
             <td colspan="2"><strong>Dirección:</strong> {{ $student->address }}</td>
             <td><strong>Comuna:</strong> {{ $student->commune }}</td>
         </tr>
-
         <tr>
             <td><strong>Teléfono:</strong> {{ $student->phone }}</td>
             <td colspan="2"><strong>Teléfono emergencia:</strong> {{ $student->emergency_phone }}</td>
         </tr>
-
         <tr>
-            <td><strong>Problemas de salud:</strong> {{ $student->has_health_issues ? 'Sí' : 'No' }}</td>
+            <td><strong>Problemas de salud:</strong> {{ $student->has_health_issues ? 'SI' : 'NO' }}</td>
             <td colspan="2"><strong>Detalle:</strong> {{ $student->health_issues_details }}</td>
         </tr>
         <tr>
@@ -115,234 +116,147 @@
         </tr>
     </table>
 
+    {{-- ================= 2. APODERADO TITULAR ================= --}}
+    {{-- ============================= --}}
+    {{-- 2. DATOS DEL APODERADO TITULAR --}}
+    {{-- ============================= --}}
+
+    <h3 class="section-title">2. DATOS DEL APODERADO TITULAR</h3>
+
+    <table class="table">
 
 
-    {{-- ============================================================
-         SECCIÓN 2: DATOS DEL APODERADO
-         ============================================================ --}}
-    <div class="section-title">2. DATOS DEL APODERADO TITULAR</div>
+        <tr>
+            <td colspan="4">
+                <strong>Parentesco con el estudiante:</strong>
+                {{ $enrollment->guardian_relationship }}
+                @if ($enrollment->guardian_relationship === 'Otro')
+                    ({{ $enrollment->guardian_relationship_other }})
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <strong>Nombre completo:</strong>
+                {{ $guardianTitular->full_name }}
+            </td>
+            <td>
+                <strong>RUT:</strong>
+                {{ $formatRut($guardianTitular->rut) }}
+            </td>
+        </tr>
 
-    <table>
         <tr>
-            <td><strong>Nombre completo:</strong> {{ $guardianTitular->full_name }}</td>
-            <td><strong>RUT:</strong> {{ $guardianTitular->rut }}</td>
+            <td colspan="4">
+                <strong>Dirección:</strong>
+                {{ $guardianTitular->address }}
+            </td>
         </tr>
+
         <tr>
-            <td colspan="2"><strong>Dirección:</strong> {{ $guardianTitular->address }}</td>
+            <td colspan="2">
+                <strong>Comuna:</strong>
+                {{ $guardianTitular->commune }}
+            </td>
+            <td>
+                <strong>Teléfono:</strong>
+                {{ $guardianTitular->phone }}
+            </td>
+            <td>
+                <strong>Sexo:</strong>
+                {{ $guardianTitular->gender ?? 'No informado' }}
+            </td>
         </tr>
+
         <tr>
-            <td><strong>Comuna:</strong> {{ $guardianTitular->commune }}</td>
-            <td><strong>Teléfono:</strong> {{ $guardianTitular->phone }}</td>
+            <td colspan="2">
+                <strong>Teléfono de emergencia:</strong>
+                {{ $guardianTitular->emergency_phone ?? 'No informado' }}
+            </td>
+            <td colspan="2">
+                <strong>Nivel educacional:</strong>
+                {{ $guardianTitular->education_level }}
+            </td>
         </tr>
+
         <tr>
-            <td><strong>Nivel educacional:</strong> {{ $guardianTitular->education_level }}</td>
-            <td><strong>Ocupación:</strong> {{ $guardianTitular->employment_status }}</td>
+            
+            <td colspan="4">
+                <strong>¿Con quién vive el estudiante?:</strong>
+                {{ $enrollment->lives_with }}
+            </td>
         </tr>
     </table>
 
+
+    {{-- ================= 3. APODERADO SUPLENTE ================= --}}
     @if ($guardianSuplente)
         <div class="section-title">3. APODERADO SUPLENTE</div>
 
         <table>
             <tr>
-                <td><strong>Nombre completo:</strong> {{ $guardianSuplente->full_name }}</td>
-                <td><strong>RUT:</strong> {{ $guardianSuplente->rut }}</td>
+                <td><strong>Nombre:</strong> {{ $guardianSuplente->full_name }}</td>
+                <td><strong>RUT:</strong> {{ $formatRut($guardianSuplente->rut) }}</td>
             </tr>
             <tr>
-                <td colspan="2"><strong>Dirección:</strong> {{ $guardianSuplente->address }}</td>
-            </tr>
-            <tr>
-                <td><strong>Comuna:</strong> {{ $guardianSuplente->commune }}</td>
-                <td><strong>Teléfono:</strong> {{ $guardianSuplente->phone }}</td>
+                <td colspan="2"><strong>Teléfono:</strong> {{ $guardianSuplente->phone }}</td>
             </tr>
         </table>
     @endif
 
-
-
-    {{-- ============================================================
-         SECCIÓN 4: MATRÍCULA
-         ============================================================ --}}
-    <div class="section-title">4. DATOS DE MATRÍCULA</div>
+    {{-- ================= AUTORIZACIONES ================= --}}
+    <div class="section-title">AUTORIZACIONES</div>
 
     <table>
         <tr>
-            <td><strong>Año escolar:</strong> {{ $enrollment->school_year }}</td>
-            <td>
-                <strong>Curso:</strong>
-                {{ optional($enrollment->course->gradeLevel)->name }}
-                {{ $enrollment->course->letter }}
-                {{ $enrollment->course->specialty }}
-            </td>
+            <td>Actividades extra-programáticas</td>
+            <td class="center">{{ $enrollment->consent_extra_activities ? 'SI' : 'NO' }}</td>
         </tr>
         <tr>
-            <td colspan="2">
-                <strong>¿Con quién vive?</strong> {{ $enrollment->lives_with }}
-            </td>
+            <td>Uso de imagen</td>
+            <td class="center">{{ $enrollment->consent_photos ? 'SI' : 'NO' }}</td>
+        </tr>
+        <tr>
+            <td>Traslado escolar</td>
+            <td class="center">{{ $enrollment->consent_school_bus ? 'SI' : 'NO' }}</td>
+        </tr>
+        <tr>
+            <td>Uso de recursos digitales</td>
+            <td class="center">{{ $enrollment->consent_internet ? 'SI' : 'NO' }}</td>
         </tr>
     </table>
 
+    {{-- ================= REGLAMENTO ================= --}}
+    <div class="section-title">REGLAMENTO Y CONVIVENCIA ESCOLAR</div>
 
-    {{-- ============================================================
-         SECCIÓN 5: AUTORIZACIONES
-         ============================================================ --}}
-    <h3 style="margin-top: 10px;">AUTORIZACIONES</h3>
-
-    <table width="100%" cellpadding="6" cellspacing="0" border="1">
+    <table>
         <tr>
-            <td width="85%">
-                Autorizo a mi hijo/a a participar en actividades extra-programáticas y
-                extra-escolares dentro y fuera del establecimiento.
-            </td>
-            <td width="15%" align="center">
-                {{ $enrollment->consent_extra_activities ? 'SI' : 'NO' }}
-            </td>
+            <td>Reglamento Interno</td>
+            <td class="center">ACEPTADO</td>
         </tr>
-
         <tr>
-            <td>
-                Autorizo a mi hijo/a a ser fotografiado/a y/o grabado/a para fines
-                pedagógicos e institucionales.
-            </td>
-            <td align="center">
-                {{ $enrollment->consent_photos ? 'SI' : 'NO' }}
-            </td>
+            <td>Manual de Convivencia Escolar</td>
+            <td class="center">ACEPTADO</td>
         </tr>
-
         <tr>
-            <td>
-                Autorizo el traslado del estudiante en buses de acercamiento escolar.
-            </td>
-            <td align="center">
-                {{ $enrollment->consent_school_bus ? 'SI' : 'NO' }}
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                Autorizo el uso de recursos digitales e internet con fines educativos.
-            </td>
-            <td align="center">
-                {{ $enrollment->consent_internet ? 'SI' : 'NO' }}
-            </td>
+            <td>Términos del proceso de matrícula</td>
+            <td class="center">ACEPTADO</td>
         </tr>
     </table>
 
-    {{-- ============================================================
-         SECCIÓN 5: REGLAMENTO Y MANUAL DE CONVIVENCIA
-         ============================================================ --}}
+    <p><strong>Fecha de aceptación:</strong> {{ $enrollment->accepted_at?->format('d/m/Y') }}</p>
 
-    <h3 style="margin-bottom: 10px;">
-        REGLAMENTO Y CONVIVENCIA ESCOLAR
-    </h3>
-
-    <p>
-        El/la apoderado/a declara haber leído y aceptado los reglamentos
-        institucionales vigentes para el año escolar {{ $enrollment->school_year }}.
-    </p>
-
-    <table width="100%" cellspacing="0" cellpadding="6" border="1">
+    {{-- ================= FIRMAS ================= --}}
+    <table class="no-border" style="margin-top:15px;">
         <tr>
-            <td width="70%">
-                Reglamento Interno del Establecimiento
+            <td style="width:50%; border:1px solid #000; height:60px;" class="center">
+                Nombre y firma del Apoderado(a)
             </td>
-            <td width="30%" align="center">
-                <strong>
-                    {{ $enrollment->accept_school_rules ? 'ACEPTADO' : 'NO ACEPTADO' }}
-                </strong>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                Manual de Convivencia Escolar
-                ({{ $enrollment->coexistence_manual_version ?? 'No informado' }})
-            </td>
-            <td align="center">
-                <strong>
-                    {{ $enrollment->accept_coexistence_rules ? 'ACEPTADO' : 'NO ACEPTADO' }}
-                </strong>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                Términos y condiciones del proceso de matrícula
-            </td>
-            <td align="center">
-                <strong>
-                    {{ $enrollment->accept_terms_conditions ? 'ACEPTADO' : 'NO ACEPTADO' }}
-                </strong>
+            <td style="width:50%; border:1px solid #000; height:60px;" class="center">
+                Nombre y firma Encargado(a) de Matrícula
             </td>
         </tr>
     </table>
-
-    @if ($enrollment->accepted_at)
-        <p style="margin-top: 10px;">
-            Fecha de aceptación:
-            <strong>{{ $enrollment->accepted_at->format('d/m/Y') }}</strong>
-        </p>
-    @endif
-
-
-
-    {{-- ============================================================
-         FIRMAS
-         ============================================================ --}}
-    <h3 style="margin-top: 10px;">OBSERVACIONES</h3>
-
-    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="page-break-inside: avoid;">
-        <tr>
-            <td style="
-            height: 35px;
-            padding: 6px;
-            vertical-align: top;
-        ">
-                {{ $enrollment->notes ?? '' }}
-            </td>
-        </tr>
-    </table>
-
-    <h3 style="margin-top: 10px;">FIRMAS</h3>
-
-    <table width="100%" cellpadding="0" cellspacing="0" style="page-break-inside: avoid;">
-        <tr>
-            <td width="50%" style="padding-right: 10px;">
-                <table width="100%" border="1">
-                    <tr>
-                        <td
-                            style="
-                        height: 65px;
-                        vertical-align: bottom;
-                        text-align: center;
-                        padding-bottom: 6px;
-                        font-size: 11px;
-                    ">
-                            Nombre y firma del Apoderado(a)
-                        </td>
-                    </tr>
-                </table>
-            </td>
-
-            <td width="50%" style="padding-left: 10px;">
-                <table width="100%" border="1">
-                    <tr>
-                        <td
-                            style="
-                        height: 65px;
-                        vertical-align: bottom;
-                        text-align: center;
-                        padding-bottom: 6px;
-                        font-size: 11px;
-                    ">
-                            Nombre y firma Encargado(a) de Matrícula
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-
 
 </body>
 

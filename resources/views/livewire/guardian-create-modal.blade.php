@@ -108,15 +108,6 @@
     </div>
 </div>
 
-{{-- ================= RELACIÓN ================= --}}
-<h3 class="font-semibold text-sm mt-4 mb-2">Relación con el estudiante</h3>
-<div>
-    <label class="text-sm">¿Con quién vive el estudiante?</label>
-    <input wire:model="lives_with_student"
-           class="w-full border rounded px-3 py-2"
-           placeholder="Ej: Madre, ambos padres, abuela">
-</div>
-
 {{-- ================= BOTONES ================= --}}
 <div class="mt-6 flex justify-between">
     <button wire:click="save"

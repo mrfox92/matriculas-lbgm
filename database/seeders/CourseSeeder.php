@@ -12,7 +12,7 @@ class CourseSeeder extends Seeder
     {
         foreach ([2025, 2026] as $year) {
 
-            // Cursos SIN letra
+            // Cursos sin letra
             $single = [
                 'Pre-Kinder',
                 'Kinder',
@@ -26,6 +26,7 @@ class CourseSeeder extends Seeder
 
             foreach ($single as $name) {
                 $lvl = GradeLevel::where('name', $name)->first();
+
                 Course::firstOrCreate([
                     'grade_level_id' => $lvl->id,
                     'letter' => null,
@@ -44,7 +45,8 @@ class CourseSeeder extends Seeder
 
             foreach ($double as $name) {
                 $lvl = GradeLevel::where('name', $name)->first();
-                foreach (['A','B'] as $letter) {
+
+                foreach (['A', 'B'] as $letter) {
                     Course::firstOrCreate([
                         'grade_level_id' => $lvl->id,
                         'letter' => $letter,
@@ -54,7 +56,7 @@ class CourseSeeder extends Seeder
                 }
             }
 
-            // Cursos con especialidades (3° y 4°)
+            // Cursos con especialidad
             $special = ['3° Medio', '4° Medio'];
             $specialties = [
                 'HC',
@@ -64,6 +66,7 @@ class CourseSeeder extends Seeder
 
             foreach ($special as $name) {
                 $lvl = GradeLevel::where('name', $name)->first();
+
                 foreach ($specialties as $spec) {
                     Course::firstOrCreate([
                         'grade_level_id' => $lvl->id,

@@ -73,13 +73,65 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="border px-2 py-1 space-x-2">
-                            <a href="{{ route('enrollments.edit', $enr) }}" class="text-blue-600 underline">Editar</a>
-                            <a href="{{ route('enrollments.pdf', $enr) }}" class="text-green-600 underline"
+                        <td class="border px-2 py-1">
+                            {{-- <a href="{{ route('enrollments.pdf', $enr) }}" class="text-green-600 underline"
                                 target="_blank">
                                 PDF
-                            </a>
+                            </a> --}}
+                            <div class="flex items-center justify-center gap-2">
+
+                                {{-- Editar --}}
+                                <a href="{{ route('enrollments.edit', $enr) }}" title="Editar matrícula"
+                                    aria-label="Editar matrícula"
+                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs
+                  border border-blue-500 text-blue-600 rounded
+                  hover:bg-blue-50">
+                                    {{-- Icono lápiz --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                    Editar
+                                </a>
+
+                                {{-- Ver / Imprimir --}}
+                                <a href="{{ route('enrollments.pdf.view', $enr) }}" target="_blank"
+                                    title="Ver o imprimir ficha" aria-label="Ver o imprimir ficha"
+                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs
+                  border border-gray-400 text-gray-700 rounded
+                  hover:bg-gray-100">
+                                    {{-- Icono ojo --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
+                         c4.478 0 8.268 2.943 9.542 7
+                         -1.274 4.057-5.064 7-9.542 7
+                         -4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Ver
+                                </a>
+
+                                {{-- Descargar PDF --}}
+                                <a href="{{ route('enrollments.pdf.download', $enr) }}" title="Descargar PDF"
+                                    aria-label="Descargar PDF"
+                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs
+                  bg-blue-600 text-white rounded
+                  hover:bg-blue-700">
+                                    {{-- Icono descarga --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+                                    </svg>
+                                    PDF
+                                </a>
+
+                            </div>
                         </td>
+
                     </tr>
                 @empty
                     <tr>

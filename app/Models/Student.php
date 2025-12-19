@@ -7,18 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     protected $fillable = [
-        'first_name', 'last_name_father', 'last_name_mother',
-        'rut', 'sex', 'birth_date', 'nationality', 'religion',
-        'has_indigenous_ancestry', 'address', 'commune',
-        'phone', 'emergency_phone',
-        'has_health_issues', 'health_issues_details',
+        'first_name',
+        'last_name_father',
+        'last_name_mother',
+        'rut',
+        'gender',
+        'birth_date',
+        'nationality',
+        'religion',
+        'indigenous_ancestry',
+        'indigenous_ancestry_type',
+        'address',
+        'commune',
+        'phone',
+        'emergency_phone',
+        'has_health_issues',
+        'health_issues_details',
     ];
 
 
     protected $casts = [
         'birth_date' => 'date',
         'indigenous_ancestry' => 'boolean',
-        'has_chronic_health_issues' => 'boolean',
+        'has_health_issues' => 'boolean',
     ];
 
     /* -------------------- RELACIONES -------------------- */

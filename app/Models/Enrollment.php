@@ -24,6 +24,9 @@ class Enrollment extends Model
         'accept_terms_conditions',
         'coexistence_manual_version',
         'accepted_at',
+        //  relacion apoderado con estudiante
+        'guardian_relationship',
+        'guardian_relationship_other',
     ];
 
     protected $casts = [

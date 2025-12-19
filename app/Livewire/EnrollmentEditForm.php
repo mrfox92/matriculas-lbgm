@@ -81,6 +81,63 @@ class EnrollmentEditForm extends Component
        ---------------------------- */
     public string $guardianMessage = '';
     public string $guardianMessageType = ''; // success | error
+    // Datos familiares
+    public ?string $guardian_relationship = null;
+    public ?string $guardian_relationship_other = null;
+    /* ----------------------------
+       LISTADO PUEBLOS ORIGINARIOS
+       ---------------------------- */
+    public array $indigenousPeoples = [
+        'Mapuche',
+        'Aymara',
+        'Rapa Nui',
+        'Quechua',
+        'Atacameño (Lickanantay)',
+        'Colla',
+        'Diaguita',
+        'Kawésqar',
+        'Yagán',
+        'Chango',
+    ];
+     /* ----------------------------
+       LISTADO NACIONALIDADES
+       ---------------------------- */
+    public array $nationalities = [
+        'Chilena',
+        'Afghana',
+        'Alemana',
+        'Argentina',
+        'Australiana',
+        'Boliviana',
+        'Brasileña',
+        'Canadiense',
+        'China',
+        'Colombiana',
+        'Coreana',
+        'Cubana',
+        'Dominicana',
+        'Ecuatoriana',
+        'Egipcia',
+        'Española',
+        'Estadounidense',
+        'Francesa',
+        'Haitiana',
+        'India',
+        'Italiana',
+        'Japonesa',
+        'Mexicana',
+        'Nigeriana',
+        'Paraguaya',
+        'Peruana',
+        'Portuguesa',
+        'Rumana',
+        'Rusa',
+        'Sudafricana',
+        'Suiza',
+        'Uruguaya',
+        'Venezolana',
+        'Otra',
+    ];
 
     /* ----------------------------
         EVENTO LISTENER
@@ -133,6 +190,10 @@ public function handleGuardianSelected(array $data): void
             'accept_school_rules' => 'accepted',
             'accept_coexistence_rules' => 'accepted',
             'accept_terms_conditions' => 'accepted',
+            // parentesco
+            'guardian_relationship' => 'nullable|in:Madre,Padre,Otro',
+            'guardian_relationship_other' => 'nullable|string|min:2',
+
         ];
     }
 
@@ -145,6 +206,12 @@ public function handleGuardianSelected(array $data): void
         ]);
     }
 
+    public function updatedGuardianRelationship($value)
+    {
+        if ($value !== 'Otro') {
+            $this->guardian_relationship_other = null;
+        }
+    }
 
     /* ----------------------------
        INICIALIZACIÓN
@@ -173,13 +240,13 @@ public function handleGuardianSelected(array $data): void
         $this->last_name_father = $s->last_name_father;
         $this->last_name_mother = $s->last_name_mother;
         $this->gender = $s->gender;
-        $this->birth_date = $s->birth_date;
+        $this->birth_date = optional($s->birth_date)->format('Y-m-d');
         $this->nationality = $s->nationality;
 
         $this->religion = $s->religion;
         $this->religion_other = $s->religion_other;
 
-        $this->indigenous_ancestry = $s->indigenous_ancestry;
+        $this->indigenous_ancestry = (int) $s->indigenous_ancestry;
         $this->indigenous_ancestry_type = $s->indigenous_ancestry_type;
 
         $this->address = $s->address;
@@ -187,12 +254,16 @@ public function handleGuardianSelected(array $data): void
         $this->phone = $s->phone;
         $this->emergency_phone = $s->emergency_phone;
 
-        $this->has_health_issues = $s->has_health_issues;
+        $this->has_health_issues = (int) $s->has_health_issues;
         $this->health_issues_details = $s->health_issues_details;
 
         // Matrícula
         $this->course_id = $this->enrollment->course_id;
         $this->lives_with = $this->enrollment->lives_with;
+
+        $this->guardian_relationship = $this->enrollment->guardian_relationship;
+        $this->guardian_relationship_other = $this->enrollment->guardian_relationship_other;
+
         $this->is_pie_student = $this->enrollment->is_pie_student;
         $this->needs_lunch = $this->enrollment->needs_lunch;
 
@@ -234,18 +305,22 @@ public function handleGuardianSelected(array $data): void
             'last_name_father' => $this->last_name_father,
             'last_name_mother' => $this->last_name_mother,
             'gender' => $this->gender,
-            'birth_date' => $this->birth_date,
+            'birth_date' => $this->birth_date ?: null,
             'nationality' => $this->nationality,
             'religion' => $this->religion,
             'religion_other' => $this->religion_other,
-            'indigenous_ancestry' => $this->indigenous_ancestry,
-            'indigenous_ancestry_type' => $this->indigenous_ancestry_type,
+            'indigenous_ancestry' => (bool) $this->indigenous_ancestry,
+            'indigenous_ancestry_type' => $this->indigenous_ancestry
+                ? $this->indigenous_ancestry_type
+                : null,
             'address' => $this->address,
             'commune' => $this->commune,
             'phone' => $this->phone,
             'emergency_phone' => $this->emergency_phone,
-            'has_health_issues' => $this->has_health_issues,
-            'health_issues_details' => $this->health_issues_details,
+            'has_health_issues' => (bool) $this->has_health_issues,
+            'health_issues_details' => $this->has_health_issues
+                ? $this->health_issues_details
+                : null,
         ]);
 
         // Actualizar matrícula
@@ -266,6 +341,14 @@ public function handleGuardianSelected(array $data): void
             'accept_terms_conditions' => $this->accept_terms_conditions,
             'coexistence_manual_version' => 'Manual de Convivencia 2026',
             'accepted_at' => now(),
+            // parentesco
+            'guardian_relationship' => $this->guardian_relationship,
+            'guardian_relationship_other' =>
+                $this->guardian_relationship === 'Otro'
+                    ? $this->guardian_relationship_other
+                    : null,
+
+
             'user_id' => Auth::id(),
         ]);
 
