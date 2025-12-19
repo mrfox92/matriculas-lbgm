@@ -42,7 +42,7 @@ Route::middleware(['auth', 'active'])->group(function () {
 
         Route::get('/nueva', [EnrollmentController::class, 'create'])
             ->name('enrollments.create');
-        
+
         Route::get('/nuevos', function () {
             return view('enrollments.new.index');
         })->name('enrollments.new.index');
@@ -74,10 +74,18 @@ Route::middleware(['auth', 'active'])->group(function () {
             Route::get('/', [UserController::class, 'index'])
                 ->name('users.index');
 
-            Route::get('/digitadores/nuevo', [UserController::class, 'createDigitador'])
-                ->name('users.digitadores.create');
+            Route::get('/crear', [UserController::class, 'create'])
+                ->name('users.create');
 
             Route::get('/{user}/editar', [UserController::class, 'edit'])
                 ->name('users.edit');
+
+            Route::patch('/{user}/toggle', [UserController::class, 'toggle'])
+                ->name('users.toggle');
+                
+            Route::delete('/{user}', [UserController::class, 'destroy'])
+                ->name('users.destroy');
+
+
         });
 });

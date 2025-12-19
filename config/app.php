@@ -124,6 +124,6 @@ return [
     ],
 
 
-    'matriculas_default_password' => env('DEFAULT_USER_PASSWORD', 'MatriculaLBGM2026'),
+    'matriculas_default_password' => env('DEFAULT_USER_PASSWORD', 'matriculalbgm2026'),
 
 ];
