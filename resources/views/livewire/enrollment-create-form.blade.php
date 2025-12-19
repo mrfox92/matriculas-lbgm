@@ -1,280 +1,343 @@
-<div class="space-y-10">
+<div class="space-y-6">
 
-    {{-- Mensaje de éxito --}}
-    @if (session('success'))
-        <div class="p-4 bg-green-100 text-green-800 rounded-lg shadow">
-            {{ session('success') }}
+    {{-- ================= PASO 1 ================= --}}
+    @if ($step === 1)
+        <div class="max-w-5xl mx-auto bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-bold mb-4">Paso 1: Datos del estudiante</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="text-sm font-medium">RUT</label>
+                    <input wire:model="rut" class="w-full border rounded px-3 py-2">
+                    @error('rut')
+                        <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="text-sm font-medium">Nombres</label>
+                    <input wire:model="first_name" class="w-full border rounded px-3 py-2">
+                    @error('first_name')
+                        <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Apellido paterno</label>
+                    <input wire:model="last_name_father" class="w-full border rounded px-3 py-2">
+                    @error('last_name_father')
+                        <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Apellido materno</label>
+                    <input wire:model="last_name_mother" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Género</label>
+                    <select wire:model="gender" class="w-full border rounded px-3 py-2">
+                        <option value="">—</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Fecha de nacimiento</label>
+                    <input type="date" wire:model="birth_date" class="w-full border rounded px-3 py-2">
+                    @error('birth_date')
+                        <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Nacionalidad</label>
+                    <select wire:model="nationality" class="w-full border rounded px-3 py-2">
+                        <option value="">—</option>
+                        @foreach ($nationalities as $nat)
+                            <option value="{{ $nat }}">{{ $nat }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Religión</label>
+                    <select wire:model="religion" class="w-full border rounded px-3 py-2">
+                        <option value="">—</option>
+                        @foreach ($religions as $rel)
+                            <option value="{{ $rel }}">{{ $rel }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                @if ($religion === 'Otra')
+                    <div class="md:col-span-3">
+                        <label class="text-sm font-medium">Especifique religión</label>
+                        <input wire:model="religion_other" class="w-full border rounded px-3 py-2">
+                    </div>
+                @endif
+
+                <div>
+                    <label class="text-sm font-medium">¿Pertenece a pueblo originario?</label>
+                    <select wire:model.live="indigenous_ancestry" class="w-full border rounded px-3 py-2">
+                        <option value="0">No</option>
+                        <option value="1">Sí</option>
+                    </select>
+
+                </div>
+
+                @if ($indigenous_ancestry == 1)
+                    <select wire:model.live="indigenous_ancestry_type" class="w-full border rounded px-3 py-2">
+                        <option value="">Seleccione…</option>
+                        @foreach ($indigenousPeoples as $pueblo)
+                            <option value="{{ $pueblo }}">{{ $pueblo }}</option>
+                        @endforeach
+                    </select>
+                @endif
+
+
+                <div class="md:col-span-2">
+                    <label class="text-sm font-medium">Dirección</label>
+                    <input wire:model="address" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Comuna</label>
+                    <input wire:model="commune" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Teléfono</label>
+                    <input wire:model="phone" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Teléfono emergencia</label>
+                    <input wire:model="emergency_phone" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Problemas de salud</label>
+                    <select wire:model.live="has_health_issues" class="w-full border rounded px-3 py-2">
+                        <option value="0">No</option>
+                        <option value="1">Sí</option>
+                    </select>
+
+                </div>
+
+                @if ($has_health_issues == 1)
+                    <textarea wire:model.live="health_issues_details" class="w-full border rounded px-3 py-2"
+                        placeholder="Ej: asma, alergias, epilepsia…"></textarea>
+                @endif
+
+            </div>
+
+            <div class="border-t mt-6 pt-4 flex items-center gap-8">
+                <label class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" wire:model="is_pie_student" class="rounded">
+                    Alumno PIE
+                </label>
+
+                <label class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" wire:model="needs_lunch" class="rounded">
+                    Necesita almuerzo
+                </label>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button wire:click="saveStudent" class="bg-blue-600 text-white px-6 py-2 rounded font-semibold">
+                    Continuar
+                </button>
+            </div>
         </div>
     @endif
 
 
-    {{-- ============================================================
-         SECCIÓN 1: DATOS DEL ESTUDIANTE
-         ============================================================ --}}
-    <div class="bg-white p-6 rounded-xl shadow-sm border">
-        <h2 class="text-2xl font-bold mb-6">Datos del estudiante</h2>
+    {{-- ================= PASO 2 ================= --}}
+    @if ($step === 2)
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow p-6 space-y-6">
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <h2 class="text-lg font-bold">Paso 2: Apoderados</h2>
 
-            <div>
-                <label class="font-semibold">RUT</label>
-                <input type="text" wire:model="rut" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div class="md:col-span-2">
-                <label class="font-semibold">Nombres</label>
-                <input type="text" wire:model="first_name" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Apellido paterno</label>
-                <input type="text" wire:model="last_name_father" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Apellido materno</label>
-                <input type="text" wire:model="last_name_mother" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Género</label>
-                <select wire:model="gender" class="w-full mt-1 px-3 py-2 border rounded-lg">
-                    <option value="">Seleccione…</option>
-                    <option value="Femenino">Femenino</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Otro">Otro</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="font-semibold">Fecha de nacimiento</label>
-                <input type="date" wire:model="birth_date" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Nacionalidad</label>
-                <input type="text" wire:model="nationality" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Religión</label>
-                <select wire:model="religion" class="w-full mt-1 px-3 py-2 border rounded-lg">
-                    <option value="">Seleccione…</option>
-                    <option value="Católica">Católica</option>
-                    <option value="Evangélica">Evangélica</option>
-                    <option value="Otra">Otra</option>
-                    <option value="Ninguna">Ninguna</option>
-                </select>
-            </div>
-
-            @if ($religion === 'Otra')
-                <div>
-                    <label class="font-semibold">Especificar religión</label>
-                    <input type="text" wire:model="religion_other"
-                           class="w-full mt-1 px-3 py-2 border rounded-lg">
+            {{-- Mensaje --}}
+            @if ($guardianMessage)
+                <div
+                    class="p-3 rounded text-sm
+            {{ $guardianMessageType === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}">
+                    {{ $guardianMessage }}
                 </div>
             @endif
 
+            {{-- APODERADO TITULAR --}}
             <div>
-                <label class="font-semibold">¿Pertenece a pueblo originario?</label>
-                <select wire:model="indigenous_ancestry" class="w-full mt-1 px-3 py-2 border rounded-lg">
-                    <option value="0">No</option>
-                    <option value="1">Sí</option>
-                </select>
-            </div>
+                <label class="font-semibold">Apoderado titular</label>
 
-            @if ($indigenous_ancestry)
-                <div>
-                    <label class="font-semibold">Indique el pueblo</label>
-                    <input type="text" wire:model="indigenous_ancestry_type"
-                           class="w-full mt-1 px-3 py-2 border rounded-lg">
-                </div>
-            @endif
-
-            <div class="md:col-span-2">
-                <label class="font-semibold">Dirección</label>
-                <input type="text" wire:model="address" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Comuna</label>
-                <input type="text" wire:model="commune" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Teléfono</label>
-                <input type="text" wire:model="phone" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Teléfono emergencia</label>
-                <input type="text" wire:model="emergency_phone" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            </div>
-
-            <div>
-                <label class="font-semibold">Problemas de salud</label>
-                <select wire:model="has_health_issues" class="w-full mt-1 px-3 py-2 border rounded-lg">
-                    <option value="0">No</option>
-                    <option value="1">Sí</option>
-                </select>
-            </div>
-
-            @if ($has_health_issues)
-                <div class="md:col-span-2">
-                    <label class="font-semibold">Especificar</label>
-                    <textarea wire:model="health_issues_details"
-                              class="w-full mt-1 px-3 py-2 border rounded-lg"></textarea>
-                </div>
-            @endif
-
-        </div>
-    </div>
-
-
-    {{-- ============================================================
-         SECCIÓN 2: DATOS ACADÉMICOS
-         ============================================================ --}}
-    <div class="bg-white p-6 rounded-xl shadow-sm border">
-        <h2 class="text-2xl font-bold mb-6">Datos académicos</h2>
-
-        <label class="font-semibold">Curso {{ $school_year }}</label>
-        <select wire:model="course_id" class="w-full mt-1 px-3 py-2 border rounded-lg">
-            <option value="">(Asignar después)</option>
-            @foreach ($courses as $c)
-                <option value="{{ $c->id }}">
-                    {{ $c->gradeLevel->name }}
-                    @if ($c->letter) {{ $c->letter }} @endif
-                    @if ($c->specialty) — {{ $c->specialty }} @endif
-                </option>
-            @endforeach
-        </select>
-    </div>
-
-
-    {{-- ============================================================
-         SECCIÓN 3: APODERADOS
-         ============================================================ --}}
-    <div class="bg-white p-6 rounded-xl shadow-sm border space-y-6">
-        <h2 class="text-2xl font-bold mb-4">Apoderados</h2>
-
-        <div>
-            <label class="font-semibold">Apoderado titular</label>
-
-            @if ($guardianTitular)
-                <div class="p-3 bg-gray-50 border rounded-lg flex justify-between items-center">
-                    <div>
-                        <strong>{{ $guardianTitular->full_name }}</strong><br>
-                        <small>{{ $guardianTitular->rut }}</small>
+                @if ($guardianTitular)
+                    <div class="mt-2 p-3 border rounded flex justify-between items-center">
+                        <div>
+                            <strong>{{ $guardianTitular->full_name }}</strong><br>
+                            <small>{{ $guardianTitular->rut }}</small>
+                        </div>
+                        <button wire:click="openGuardianModal('titular')" class="text-blue-600 font-semibold">
+                            Cambiar
+                        </button>
                     </div>
-
-                    <button wire:click="$dispatch('open-guardian-modal', { type: 'titular' })"
-                            class="text-blue-600 font-semibold">
-                        Cambiar
+                @else
+                    <button wire:click="openGuardianModal('titular')" class="mt-2 px-4 py-2 bg-blue-100 border rounded">
+                        Buscar / Registrar apoderado
                     </button>
-                </div>
-            @else
-                <button wire:click="$dispatch('open-guardian-modal', { type: 'titular' })"
-                        class="px-4 py-2 bg-blue-100 border rounded-lg">
-                    Buscar / Registrar apoderado
-                </button>
-            @endif
-        </div>
+                @endif
+            </div>
 
-        <div>
-            <label class="font-semibold">Apoderado suplente (opcional)</label>
+            {{-- APODERADO SUPLENTE --}}
+            <div>
+                <label class="font-semibold">Apoderado suplente (opcional)</label>
 
-            @if ($guardianSuplente)
-                <div class="p-3 bg-gray-50 border rounded-lg flex justify-between items-center">
-                    <div>
-                        <strong>{{ $guardianSuplente->full_name }}</strong><br>
-                        <small>{{ $guardianSuplente->rut }}</small>
+                @if ($guardianSuplente)
+                    <div class="mt-2 p-3 border rounded flex justify-between items-center">
+                        <div>
+                            <strong>{{ $guardianSuplente->full_name }}</strong><br>
+                            <small>{{ $guardianSuplente->rut }}</small>
+                        </div>
+                        <button wire:click="openGuardianModal('suplente')" class="text-blue-600 font-semibold">
+                            Cambiar
+                        </button>
                     </div>
-
-                    <button wire:click="$dispatch('open-guardian-modal', { type: 'suplente' })"
-                            class="text-blue-600 font-semibold">
-                        Cambiar
+                @else
+                    <button wire:click="openGuardianModal('suplente')"
+                        class="mt-2 px-4 py-2 bg-blue-100 border rounded">
+                        Buscar / Registrar apoderado
                     </button>
-                </div>
-            @else
-                <button wire:click="$dispatch('open-guardian-modal', { type: 'suplente' })"
-                        class="px-4 py-2 bg-blue-100 border rounded-lg">
-                    Buscar / Registrar apoderado
+                @endif
+            </div>
+
+            {{-- BOTONES --}}
+            <div class="flex justify-between pt-4">
+                <button wire:click="$set('step', 1)" class="px-4 py-2 bg-gray-200 rounded">
+                    Volver
                 </button>
+
+                <button wire:click="saveGuardians" class="px-6 py-2 bg-blue-600 text-white rounded font-semibold">
+                    Continuar
+                </button>
+            </div>
+
+        </div>
+    @endif
+
+    {{-- ================= PASO 3 ================= --}}
+    @if ($step === 3)
+        <div class="bg-white p-6 rounded-xl shadow-sm border">
+            <h2 class="text-2xl font-bold mb-6">Datos académicos</h2>
+
+            <label class="font-semibold">Curso {{ now()->year + 1 }}</label>
+            <select wire:model="course_id" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <option value="">(Asignar después)</option>
+                @foreach ($courses as $c)
+                    <option value="{{ $c->id }}">
+                        {{ $c->gradeLevel->name }}
+                        @if ($c->letter)
+                            {{ $c->letter }}
+                        @endif
+                        @if ($c->specialty)
+                            — {{ $c->specialty }}
+                        @endif
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border">
+            <h2 class="text-2xl font-bold mb-4">Datos familiares</h2>
+
+            <label class="font-semibold">¿Con quién vive el estudiante?</label>
+            <input type="text" wire:model="lives_with" class="w-full mt-1 px-3 py-2 border rounded-lg"
+                placeholder="Ej: ambos padres, abuelos, madre...">
+
+            <label class="font-semibold mt-4 block">Parentesco del apoderado titular</label>
+
+            <select wire:model.live="guardian_relationship" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <option value="">Seleccione…</option>
+                <option value="Madre">Madre</option>
+                <option value="Padre">Padre</option>
+                <option value="Otro">Otro</option>
+            </select>
+
+            @if ($guardian_relationship === 'Otro')
+                <input type="text" wire:model.live="guardian_relationship_other"
+                    class="w-full mt-2 px-3 py-2 border rounded-lg" placeholder="Ej: abuelo, tía, tutor legal">
             @endif
         </div>
-    </div>
+        <div class="bg-white rounded-lg shadow p-6 mt-6">
+            <h3 class="font-semibold text-lg mb-4">Autorizaciones y declaraciones</h3>
 
+            <div class="space-y-3 text-sm">
+                <label class="flex gap-2">
+                    <input type="checkbox" wire:model="consent_extra_activities">
+                    Autorizo participación en actividades extra-programáticas.
+                </label>
 
-    {{-- ============================================================
-         SECCIÓN 4: DATOS FAMILIARES
-         ============================================================ --}}
-    <div class="bg-white p-6 rounded-xl shadow-sm border">
-        <h2 class="text-2xl font-bold mb-4">Datos familiares</h2>
+                <label class="flex gap-2">
+                    <input type="checkbox" wire:model="consent_photos">
+                    Autorizo uso de fotografías y material audiovisual.
+                </label>
 
-        <label class="font-semibold">¿Con quién vive el estudiante?</label>
-        <input type="text" wire:model="lives_with"
-               class="w-full mt-1 px-3 py-2 border rounded-lg">
-    </div>
+                <label class="flex gap-2">
+                    <input type="checkbox" wire:model="consent_school_bus">
+                    Autorizo traslado en buses de acercamiento escolar.
+                </label>
 
+                <label class="flex gap-2">
+                    <input type="checkbox" wire:model="consent_internet">
+                    Autorizo uso de recursos digitales e internet.
+                </label>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6 mt-6">
+            <h3 class="text-lg font-semibold mb-4">Reglamento y Convivencia Escolar</h3>
 
-    {{-- ============================================================
-         SECCIÓN 5: SALUD Y AUTORIZACIONES
-         ============================================================ --}}
-    <div class="bg-white p-6 rounded-xl shadow-sm border grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-3 text-sm">
+                <label class="flex gap-2">
+                    <input type="checkbox" wire:model="accept_school_rules">
+                    Declaro haber leído y aceptado el Reglamento Interno.
+                </label>
 
-        <div>
-            <h2 class="text-2xl font-bold mb-4">Salud</h2>
+                <label class="flex gap-2">
+                    <input type="checkbox" wire:model="accept_coexistence_rules">
+                    Declaro haber leído el Manual de Convivencia Escolar 2026.
+                </label>
 
-            <label class="block">
-                <input type="checkbox" wire:model="is_pie_student">
-                Alumno PIE
-            </label>
+                <label class="flex gap-2">
+                    <input type="checkbox" wire:model="accept_terms_conditions">
+                    Acepto los términos y condiciones del proceso.
+                </label>
+            </div>
 
-            <label class="block">
-                <input type="checkbox" wire:model="needs_lunch">
-                Necesita almuerzo
-            </label>
+            @error('accept_school_rules')
+                <p class="text-red-600">{{ $message }}</p>
+            @enderror
+            @error('accept_coexistence_rules')
+                <p class="text-red-600">{{ $message }}</p>
+            @enderror
+            @error('accept_terms_conditions')
+                <p class="text-red-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <div>
-            <h2 class="text-2xl font-bold mb-4">Autorizaciones</h2>
-
-            <label class="block">
-                <input type="checkbox" wire:model="consent_extra_activities">
-                Actividades extraescolares
-            </label>
-
-            <label class="block">
-                <input type="checkbox" wire:model="consent_photos">
-                Fotografías pedagógicas
-            </label>
-
-            <label class="block">
-                <input type="checkbox" wire:model="consent_school_bus">
-                Bus de acercamiento
-            </label>
-
-            <label class="block">
-                <input type="checkbox" wire:model="consent_internet">
-                Uso de internet
-            </label>
+        <div class="flex justify-end mt-6">
+            <button wire:click="confirmEnrollment" class="px-6 py-3 bg-green-600 text-white rounded-xl shadow">
+                Confirmar matrícula
+            </button>
         </div>
-    </div>
 
 
-    {{-- ============================================================
-         BOTÓN FINAL
-         ============================================================ --}}
-    <div class="flex justify-end">
-        <button wire:click="save"
-                class="px-6 py-3 bg-green-600 text-white text-lg rounded-xl shadow hover:bg-green-700">
-            Crear matrícula
-        </button>
-    </div>
+    @endif
 
-
-    {{-- MODALES --}}
-    @livewire('guardian-search-modal')
-    @livewire('guardian-create-modal')
+    {{-- Modales reutilizados --}}
+    <livewire:guardian-search-modal />
+    <livewire:guardian-create-modal />
 
 </div>

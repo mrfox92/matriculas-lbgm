@@ -3,17 +3,24 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Enrollment;
 use App\Models\Student;
+use App\Models\Enrollment;
 use App\Models\Guardian;
 use App\Models\Course;
 
 class EnrollmentCreateForm extends Component
 {
-    /* ============================
-       ESTUDIANTE
-       ============================ */
+    public int $step = 1;
+
+    public ?Student $student = null;
+    public ?Enrollment $enrollment = null;
+    public ?int $enrollment_id = null;
+
+    /* =========================
+       CAMPOS ESTUDIANTE
+       ========================= */
     public $rut;
     public $first_name;
     public $last_name_father;
@@ -36,12 +43,14 @@ class EnrollmentCreateForm extends Component
     public $has_health_issues = 0;
     public $health_issues_details;
 
-    /* ============================
+    /* =========================
        MATRÍCULA
-       ============================ */
-    public $school_year;
+       ========================= */
     public $course_id;
     public $lives_with;
+    public $guardian_relationship;
+    public $guardian_relationship_other;
+
     public $is_pie_student = false;
     public $needs_lunch = false;
 
@@ -50,43 +59,68 @@ class EnrollmentCreateForm extends Component
     public $consent_school_bus = false;
     public $consent_internet = false;
 
-    /* ============================
+    public bool $accept_school_rules = false;
+    public bool $accept_coexistence_rules = false;
+    public bool $accept_terms_conditions = false;
+
+    /* =========================
        APODERADOS
-       ============================ */
-    public $guardian_titular_id;
-    public $guardian_suplente_id;
+       ========================= */
+    public ?int $guardian_titular_id = null;
+    public ?int $guardian_suplente_id = null;
 
-    public $guardianTitular;
-    public $guardianSuplente;
+    public ?Guardian $guardianTitular = null;
+    public ?Guardian $guardianSuplente = null;
 
-    public function mount()
+    public string $guardianSelecting = ''; // titular | suplente
+
+    public string $guardianMessage = '';
+    public string $guardianMessageType = '';
+
+    /* =========================
+       LISTADOS (COPIA EDIT)
+       ========================= */
+    public array $indigenousPeoples = [
+        'Mapuche','Aymara','Rapa Nui','Quechua','Atacameño (Lickanantay)',
+        'Colla','Diaguita','Kawésqar','Yagán','Chango',
+    ];
+
+    public array $nationalities = [
+        'Chilena','Argentina','Boliviana','Colombiana','Venezolana',
+        'Peruana','Haitiana','Otra',
+    ];
+    
+    public array $religions = ['Católica', 'Evangélica', 'Testigos de Jehová', 'Mormón', 'Otra', 'Ninguna'];
+
+    protected function rules()
     {
-        $this->school_year = now()->year + 1;
+        return [
+            // reglamentos
+            'accept_school_rules' => 'accepted',
+            'accept_coexistence_rules' => 'accepted',
+            'accept_terms_conditions' => 'accepted',
+
+            // familiares
+            'guardian_relationship' => 'nullable|in:Madre,Padre,Otro',
+            'guardian_relationship_other' => 'nullable|string|min:2',
+
+            // académicos
+            'course_id' => 'nullable|exists:courses,id',
+        ];
     }
 
-    #[\Livewire\Attributes\On('guardian-selected')]
-    public function setGuardian($payload)
-    {
-        if ($payload['type'] === 'titular') {
-            $this->guardian_titular_id = $payload['id'];
-            $this->guardianTitular = Guardian::find($payload['id']);
-        } else {
-            $this->guardian_suplente_id = $payload['id'];
-            $this->guardianSuplente = Guardian::find($payload['id']);
-        }
-    }
-
-    public function save()
+    /* =========================
+       PASO 1 – CREAR ESTUDIANTE
+       ========================= */
+    public function saveStudent()
     {
         $this->validate([
             'rut' => 'required|unique:students,rut',
             'first_name' => 'required',
             'last_name_father' => 'required',
             'birth_date' => 'required|date',
-            'guardian_titular_id' => 'required|exists:guardians,id',
         ]);
 
-        // 1️⃣ Crear estudiante
         $student = Student::create([
             'rut' => $this->rut,
             'first_name' => $this->first_name,
@@ -97,46 +131,159 @@ class EnrollmentCreateForm extends Component
             'nationality' => $this->nationality,
             'religion' => $this->religion,
             'religion_other' => $this->religion_other,
-            'indigenous_ancestry' => $this->indigenous_ancestry,
+            'indigenous_ancestry' => (bool)$this->indigenous_ancestry,
             'indigenous_ancestry_type' => $this->indigenous_ancestry_type,
             'address' => $this->address,
             'commune' => $this->commune,
             'phone' => $this->phone,
             'emergency_phone' => $this->emergency_phone,
-            'has_health_issues' => $this->has_health_issues,
+            'has_health_issues' => (bool)$this->has_health_issues,
             'health_issues_details' => $this->health_issues_details,
         ]);
 
-        // 2️⃣ Crear matrícula
-        Enrollment::create([
+        // Crear matrícula base (vacía)
+        $this->enrollment = Enrollment::create([
             'student_id' => $student->id,
-            'course_id' => $this->course_id,
-            'school_year' => $this->school_year,
+            'school_year' => now()->year + 1,
+            'enrollment_type' => 'New Student',
+            'status' => 'Pending',
+            'user_id' => Auth::id(),
+        ]);
+
+        $this->enrollment_id = $this->enrollment->id;
+        $this->student = $student;
+
+        // Avanzamos al Paso 2 (Apoderados)
+        $this->step = 2;
+    }
+
+    /* =========================
+       PASO 2 – APODERADOS
+       ========================= */
+    #[On('guardian-selected')]
+    public function handleGuardianSelected(array $data): void
+    {
+        $guardianId = (int) ($data['guardian_id'] ?? 0);
+        $type = $data['type'] ?? $this->guardianSelecting;
+
+        $this->guardianMessage = '';
+        $this->guardianMessageType = '';
+
+        $titularId  = $this->guardian_titular_id;
+        $suplenteId = $this->guardian_suplente_id;
+
+        if (
+            ($type === 'titular'  && $suplenteId && $guardianId === $suplenteId) ||
+            ($type === 'suplente' && $titularId  && $guardianId === $titularId)
+        ) {
+            $this->guardianMessage = 'El apoderado titular y suplente no pueden ser la misma persona.';
+            $this->guardianMessageType = 'error';
+            return;
+        }
+
+        if ($type === 'titular') {
+            $this->guardian_titular_id = $guardianId;
+            $this->guardianTitular = Guardian::find($guardianId);
+        }
+
+        if ($type === 'suplente') {
+            $this->guardian_suplente_id = $guardianId;
+            $this->guardianSuplente = Guardian::find($guardianId);
+        }
+
+        $this->guardianMessage = 'Apoderado asignado correctamente.';
+        $this->guardianMessageType = 'success';
+    }
+
+    public function openGuardianModal(string $type): void
+    {
+        $this->guardianSelecting = $type;
+
+        $this->dispatch('open-guardian-modal', [
+            'type' => $type,
+        ]);
+    }
+
+
+
+    public function saveGuardians(): void
+    {
+        if (!$this->guardian_titular_id) {
+            $this->guardianMessage = 'Debe seleccionar un apoderado titular.';
+            $this->guardianMessageType = 'error';
+            return;
+        }
+
+        $this->enrollment->update([
             'guardian_titular_id' => $this->guardian_titular_id,
             'guardian_suplente_id' => $this->guardian_suplente_id,
+        ]);
+
+        $this->step = 3;
+    }
+
+
+    /* =========================
+       PASO FINAL – CONFIRMAR
+       ========================= */
+    public function confirmEnrollment()
+    {
+        $this->validate();
+
+        $this->enrollment->update([
+            'course_id' => $this->course_id,
             'lives_with' => $this->lives_with,
-            'is_pie_student' => $this->is_pie_student,
-            'needs_lunch' => $this->needs_lunch,
+            'guardian_relationship' => $this->guardian_relationship,
+            'guardian_relationship_other' =>
+                $this->guardian_relationship === 'Otro'
+                    ? $this->guardian_relationship_other
+                    : null,
+
             'consent_extra_activities' => $this->consent_extra_activities,
             'consent_photos' => $this->consent_photos,
             'consent_school_bus' => $this->consent_school_bus,
             'consent_internet' => $this->consent_internet,
-            'enrollment_type' => 'New Student',
+
+            'accept_school_rules' => $this->accept_school_rules,
+            'accept_coexistence_rules' => $this->accept_coexistence_rules,
+            'accept_terms_conditions' => $this->accept_terms_conditions,
+
             'status' => 'Confirmed',
-            'user_id' => Auth::id(),
+            'accepted_at' => now(),
+            'user_id' => auth()->id(),
         ]);
 
-        session()->flash('success', 'Matrícula creada correctamente.');
-
+        // session()->flash('success', 'Matrícula completada correctamente.');
         return redirect()
-            ->route('enrollments.new.index')
-            ->with('success', 'Matrícula creada correctamente. Puede generar el PDF o completar el proceso.');
+        ->route('enrollments.new.index')
+        ->with('success', 'Matrícula completada correctamente.');
+    }
+
+    public function updatedGuardianRelationship($value)
+    {
+        if ($value !== 'Otro') {
+            $this->guardian_relationship_other = null;
+        }
+    }
+
+    public function updatedIndigenousAncestry($value)
+    {
+        if ((int)$value !== 1) {
+            $this->indigenous_ancestry_type = null;
+        }
+    }
+
+    public function updatedHasHealthIssues($value)
+    {
+        if ((int)$value !== 1) {
+            $this->health_issues_details = null;
+        }
     }
 
     public function render()
     {
         return view('livewire.enrollment-create-form', [
-            'courses' => Course::where('school_year', $this->school_year)->get(),
+            'courses' => Course::where('school_year', now()->year + 1)->get(),
         ]);
     }
 }

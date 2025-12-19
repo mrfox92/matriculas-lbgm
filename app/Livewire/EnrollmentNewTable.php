@@ -13,9 +13,10 @@ class EnrollmentNewTable extends Component
 
     public $schoolYear;
     public $courseId = '';
+    public $status = '';
     public $search = '';
 
-    protected $queryString = ['schoolYear', 'courseId', 'search'];
+    protected $queryString = ['schoolYear', 'courseId', 'status', 'search'];
 
     public function mount()
     {
@@ -35,6 +36,10 @@ class EnrollmentNewTable extends Component
 
         if ($this->courseId) {
             $query->where('course_id', $this->courseId);
+        }
+
+        if ($this->status !== '') {
+            $query->where('status', $this->status);
         }
 
         if ($this->search) {

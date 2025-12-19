@@ -28,9 +28,10 @@ return new class extends Migration {
 
             // Apoderados del año (titular / suplente)
             $table->foreignId('guardian_titular_id')
+                ->nullable() // CLAVE
                 ->constrained('guardians')
                 ->cascadeOnUpdate()
-                ->restrictOnDelete();
+                ->nullOnDelete();
 
             $table->foreignId('guardian_suplente_id')
                 ->nullable()
@@ -46,7 +47,7 @@ return new class extends Migration {
                 ->nullOnDelete();
 
             // Datos del proceso
-            $table->date('enrollment_date')->default(now());
+            $table->date('enrollment_date')->useCurrent();
             $table->enum('enrollment_type', ['New Student', 'Returning Student'])
                   ->default('Returning Student');
             $table->enum('status', ['Pending', 'Confirmed', 'Cancelled'])

@@ -409,7 +409,7 @@
 
         {{-- PDF --}}
         @if ($enrollment->status === 'Confirmed')
-            <a href="{{ route('enrollments.pdf', $enrollment->id) }}" target="_blank"
+            <a href="{{ route('enrollments.pdf.view', $enrollment) }}" target="_blank"
                 class="px-6 py-3 bg-gray-100 border rounded-xl shadow text-gray-700 hover:bg-gray-200">
                 📄 Descargar ficha PDF
             </a>

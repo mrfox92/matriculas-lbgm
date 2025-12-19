@@ -213,6 +213,20 @@ public function handleGuardianSelected(array $data): void
         }
     }
 
+    public function updatedIndigenousAncestry($value)
+    {
+        if ((int)$value !== 1) {
+            $this->indigenous_ancestry_type = null;
+        }
+    }
+
+    public function updatedHasHealthIssues($value)
+    {
+        if ((int)$value !== 1) {
+            $this->health_issues_details = null;
+        }
+    }
+
     /* ----------------------------
        INICIALIZACIÓN
        ---------------------------- */
