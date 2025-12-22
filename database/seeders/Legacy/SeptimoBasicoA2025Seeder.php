@@ -1,0 +1,437 @@
+<?php
+
+namespace Database\Seeders\Legacy;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use App\Models\Student;
+use App\Models\Enrollment;
+use App\Models\Course;
+
+class SeptimoBasicoA2025Seeder extends Seeder
+{
+    public function run(): void
+    {
+        DB::transaction(function () {
+
+            $course = Course::whereHas('gradeLevel', fn ($q) =>
+                $q->where('name', '7° Básico')
+            )
+            ->where('letter', 'A')
+            ->where('school_year', 2026)
+            ->firstOrFail();
+
+            $students = [
+
+                [
+                    'rut' => '24.174.322-5',
+                    'first_name' => 'Fabián Leonardo',
+                    'last_name_father' => 'Leonardo',
+                    'last_name_mother' => null,
+                    'gender' => 'Femenino',
+                    'birth_date' => '2013-01-23',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Evangélica',
+                    'address' => 'Iñaque Huerto #11',
+                    'commune' => 'Máfil',
+                    'phone' => '956931908813',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.844.546-5',
+                    'first_name' => 'Jennifer Belén',
+                    'last_name_father' => 'Alvear',
+                    'last_name_mother' => 'Silva',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2012-01-12',
+                    'nationality' => 'Chilena',
+                    'religion' => null,
+                    'address' => 'Linguento Km 8',
+                    'commune' => 'Máfil',
+                    'phone' => '969189055',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => true,
+                ],
+
+                [
+                    'rut' => '24.063.060-5',
+                    'first_name' => 'Constanza Antonella',
+                    'last_name_father' => 'Cárdenas',
+                    'last_name_mother' => 'Bascur',
+                    'gender' => 'Femenino',
+                    'birth_date' => null,
+                    'nationality' => 'Chilena',
+                    'religion' => 'Evangélica',
+                    'address' => 'Guillermo Hortl 380',
+                    'commune' => 'Máfil',
+                    'phone' => '989264044',
+                    'indigenous' => null,
+                    'health' => true,
+                    'pie' => true,
+                ],
+
+                [
+                    'rut' => '24.063.059-1',
+                    'first_name' => 'Jorge Iván',
+                    'last_name_father' => 'Cárdenas',
+                    'last_name_mother' => 'Bascur',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2012-09-12',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Evangélica',
+                    'address' => 'Guillermo Hortl 380',
+                    'commune' => 'Máfil',
+                    'phone' => '989264044',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => true,
+                ],
+
+                [
+                    'rut' => '24.221.148-0',
+                    'first_name' => 'Daniel Isaías',
+                    'last_name_father' => 'Cares',
+                    'last_name_mother' => 'Alvarado',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2013-03-17',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Evangélica',
+                    'address' => 'Blanco Encalada',
+                    'commune' => 'Máfil',
+                    'phone' => '984872143',
+                    'indigenous' => null,
+                    'health' => true,
+                    'pie' => true,
+                ],
+
+                [
+                    'rut' => '24.584.393-5',
+                    'first_name' => 'Luis Alejandro',
+                    'last_name_father' => 'Cerda',
+                    'last_name_mother' => 'Henríquez',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2011-03-04',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Mulpun',
+                    'commune' => 'Máfil',
+                    'phone' => '958155291',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => true,
+                ],
+
+                [
+                    'rut' => '24.140.567-2',
+                    'first_name' => 'Yarrettzi Sttephanie',
+                    'last_name_father' => 'Chuñil',
+                    'last_name_mother' => 'Cayun',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2012-12-14',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Huillón S/N',
+                    'commune' => 'Máfil',
+                    'phone' => '955369557',
+                    'indigenous' => 'Mapuche',
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '23.947.033-5',
+                    'first_name' => 'Isidora Belén',
+                    'last_name_father' => 'Díaz',
+                    'last_name_mother' => 'Hormazábal',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2012-05-10',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Huillón S/N',
+                    'commune' => 'Máfil',
+                    'phone' => '921786644',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.243.776-4',
+                    'first_name' => 'Felipe Ignacio',
+                    'last_name_father' => 'Gonzales',
+                    'last_name_mother' => 'Guzmán',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2013-04-14',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Rinconada',
+                    'commune' => 'Máfil',
+                    'phone' => '978373943',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.197.185-6',
+                    'first_name' => 'Jade Antonia',
+                    'last_name_father' => 'López',
+                    'last_name_mother' => 'Cárdenas',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2013-02-13',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Pidey S/N',
+                    'commune' => 'Máfil',
+                    'phone' => '934412447',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '23.401.101-4',
+                    'first_name' => 'Mis Juliana',
+                    'last_name_father' => 'Mansilla',
+                    'last_name_mother' => 'Ortega',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2010-08-16',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Evangélica',
+                    'address' => 'Piday S/N',
+                    'commune' => 'Máfil',
+                    'phone' => '996905753',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.232.340-8',
+                    'first_name' => 'Bruno Sergio Benjamín',
+                    'last_name_father' => 'Marín',
+                    'last_name_mother' => 'Manqui',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2013-05-29',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Otra',
+                    'address' => 'Sector Runca Parcela N°4',
+                    'commune' => 'Máfil',
+                    'phone' => '995984829',
+                    'indigenous' => 'Mapuche',
+                    'health' => false,
+                    'pie' => true,
+                ],
+
+                [
+                    'rut' => '22.932.279-6',
+                    'first_name' => 'Valentina Chantal',
+                    'last_name_father' => 'Márquez',
+                    'last_name_mother' => 'Urrea',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2008-11-17',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Evangélica',
+                    'address' => 'Las Palmeras 216',
+                    'commune' => 'Máfil',
+                    'phone' => '982330024',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => true,
+                ],
+
+                [
+                    'rut' => '23.981.920-6',
+                    'first_name' => 'Pascal Ignacia',
+                    'last_name_father' => 'Molina',
+                    'last_name_mother' => 'Baeza',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2012-06-14',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Folilco',
+                    'commune' => 'Máfil',
+                    'phone' => '934605645',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.219.333-4',
+                    'first_name' => 'Emilia Antonia',
+                    'last_name_father' => 'Muñoz',
+                    'last_name_mother' => 'Pérez',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2012-03-12',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Runca Km 4',
+                    'commune' => 'Máfil',
+                    'phone' => '957168387',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.150.190-6',
+                    'first_name' => 'Aier Joan',
+                    'last_name_father' => 'Reyes',
+                    'last_name_mother' => 'Rebolledo',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2012-12-27',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Otra',
+                    'address' => 'Villa Padre Hurtado',
+                    'commune' => 'Máfil',
+                    'phone' => '941680323',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => true,
+                ],
+
+                [
+                    'rut' => '24.944.907-7',
+                    'first_name' => 'Bastián Alfonso',
+                    'last_name_father' => 'Seura',
+                    'last_name_mother' => 'Chaud',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2012-05-09',
+                    'nationality' => 'Chilena',
+                    'religion' => null,
+                    'address' => 'Fundo Putreguel',
+                    'commune' => 'Máfil',
+                    'phone' => '974082540',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.067.111-5',
+                    'first_name' => 'Vania Martina',
+                    'last_name_father' => 'Vargas',
+                    'last_name_mother' => 'Matus',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2012-09-14',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Huillón S/N',
+                    'commune' => 'Máfil',
+                    'phone' => '953052640',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.272.269-8',
+                    'first_name' => 'Leonor Estela',
+                    'last_name_father' => 'Vega',
+                    'last_name_mother' => 'Peña',
+                    'gender' => 'Femenino',
+                    'birth_date' => '2013-05-09',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Católica',
+                    'address' => 'Sector Runca',
+                    'commune' => 'Máfil',
+                    'phone' => '932689624',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.174.801-4',
+                    'first_name' => 'Bastián Alexsandre',
+                    'last_name_father' => 'Certes',
+                    'last_name_mother' => 'Triviños',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2013-01-17',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Evangélica',
+                    'address' => 'Calle Servicio La Traca',
+                    'commune' => 'Máfil',
+                    'phone' => '958265674',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.100.471-6',
+                    'first_name' => 'Rubén Aron Ignacio',
+                    'last_name_father' => 'Curiqueo',
+                    'last_name_mother' => 'Vergara',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2012-10-25',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Otra',
+                    'address' => 'Calle Norte 116',
+                    'commune' => 'Máfil',
+                    'phone' => '948951994',
+                    'indigenous' => null,
+                    'health' => false,
+                    'pie' => false,
+                ],
+
+                [
+                    'rut' => '24.158.328-7',
+                    'first_name' => 'Disan Magdiel',
+                    'last_name_father' => 'Cárdenas',
+                    'last_name_mother' => 'Garrido',
+                    'gender' => 'Masculino',
+                    'birth_date' => '2013-01-07',
+                    'nationality' => 'Chilena',
+                    'religion' => 'Otra',
+                    'address' => 'Huillón S/N',
+                    'commune' => 'Máfil',
+                    'phone' => '965193667',
+                    'indigenous' => null,
+                    'health' => true,
+                    'pie' => false,
+                ],
+            ];
+
+            foreach ($students as $s) {
+
+                $student = Student::firstOrCreate(
+                    ['rut' => strtolower($s['rut'])],
+                    [
+                        'first_name' => $s['first_name'],
+                        'last_name_father' => $s['last_name_father'],
+                        'last_name_mother' => $s['last_name_mother'],
+                        'gender' => $s['gender'],
+                        'birth_date' => $s['birth_date'],
+                        'nationality' => $s['nationality'],
+                        'religion' => $s['religion'],
+                        'address' => $s['address'],
+                        'commune' => $s['commune'],
+                        'phone' => $s['phone'],
+                        'indigenous_ancestry' => !empty($s['indigenous']),
+                        'indigenous_ancestry_type' => $s['indigenous'] ?: null,
+                    ]
+                );
+
+                Enrollment::firstOrCreate(
+                    [
+                        'student_id' => $student->id,
+                        'school_year' => 2026,
+                    ],
+                    [
+                        'course_id' => $course->id,
+                        'enrollment_type' => 'Returning Student',
+                        'status' => 'Pending',
+                        'has_health_issues' => (bool) $s['health'],
+                        'is_pie_student' => (bool) $s['pie'],
+                    ]
+                );
+            }
+        });
+    }
+}

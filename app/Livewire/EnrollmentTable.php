@@ -52,7 +52,7 @@ class EnrollmentTable extends Component
 
         $enrollments = $query->orderByRaw("enrollment_type = 'New Student' DESC")
             ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->paginate(50);
 
         return view('livewire.enrollment-table', [
             'enrollments' => $enrollments,

@@ -51,7 +51,7 @@ class EnrollmentReturningTable extends Component
         }
 
         return view('livewire.enrollment-returning-table', [
-            'enrollments' => $query->orderBy('id', 'desc')->paginate(10),
+            'enrollments' => $query->orderBy('id', 'desc')->paginate(50),
             'courses' => Course::where('school_year', $this->schoolYear)
                 ->with('gradeLevel')
                 ->get(),
