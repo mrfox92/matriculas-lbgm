@@ -4,8 +4,7 @@
             Matrículas alumnos antiguos {{ now()->year + 1 }}
         </h2>
     </x-slot>
-
-    <div class="py-6">
+    <div class="py-6 pb-40">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <p class="mb-4 text-sm text-gray-600">

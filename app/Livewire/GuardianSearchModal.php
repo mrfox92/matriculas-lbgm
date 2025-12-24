@@ -20,16 +20,19 @@ class GuardianSearchModal extends Component
     }
 
     #[On('open-guardian-modal')]
-    public function openModal(array $data = []): void
+    public function openModal(string $type = 'titular'): void
     {
-        // FIJA CONTEXTO DESDE EnrollmentEditForm
-        $this->type = $data['type'] ?? 'titular';
+        $this->type = in_array($type, ['titular', 'suplente'], true)
+            ? $type
+            : 'titular';
 
-        $this->reset('search');
-        $this->results = collect();
+        $this->search = '';
+        $this->results = collect(); // ✅ SIEMPRE Collection
         $this->open = true;
     }
-    
+
+
+
     #[On('close-guardian-modal')]
     public function closeModal(): void
     {
@@ -57,16 +60,18 @@ class GuardianSearchModal extends Component
 
     public function selectGuardian(int $id): void
     {
-        // ENVÍA ID + CONTEXTO
-        $this->dispatch('guardian-selected', [
-            'guardian_id' => $id,
-            'type' => $this->type,
-        ]);
+        // ✅ Livewire 3: enviar parámetros nombrados
+        $this->dispatch(
+            'guardian-selected',
+            guardian_id: $id,
+            type: $this->type
+        );
 
         $this->reset('search');
         $this->results = collect();
         $this->open = false;
     }
+
 
     public function render()
     {

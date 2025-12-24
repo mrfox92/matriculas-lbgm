@@ -14,6 +14,10 @@
                 </div>
             @endif
 
+            <p class="mb-4 text-sm text-gray-600">
+                Listado de estudiantes nuevos que se matriculan para el año {{ now()->year + 1 }}.
+            </p>
+
             @livewire('enrollment-new-table')
         </div>
     </div>

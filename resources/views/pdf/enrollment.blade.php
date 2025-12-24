@@ -116,7 +116,6 @@
         </tr>
     </table>
 
-    {{-- ================= 2. APODERADO TITULAR ================= --}}
     {{-- ============================= --}}
     {{-- 2. DATOS DEL APODERADO TITULAR --}}
     {{-- ============================= --}}
@@ -124,66 +123,68 @@
     <h3 class="section-title">2. DATOS DEL APODERADO TITULAR</h3>
 
     <table class="table">
-
-
         <tr>
             <td colspan="4">
                 <strong>Parentesco con el estudiante:</strong>
-                {{ $enrollment->guardian_relationship }}
+                {{ $enrollment->guardian_relationship ?? 'No informado' }}
                 @if ($enrollment->guardian_relationship === 'Otro')
                     ({{ $enrollment->guardian_relationship_other }})
                 @endif
             </td>
         </tr>
+
         <tr>
             <td colspan="3">
                 <strong>Nombre completo:</strong>
-                {{ $guardianTitular->full_name }}
+                {{ $guardianTitular?->full_name ?? 'No informado' }}
             </td>
+
             <td>
                 <strong>RUT:</strong>
-                {{ $formatRut($guardianTitular->rut) }}
+                {{ $guardianTitular?->rut ? $formatRut($guardianTitular->rut) : 'No informado' }}
             </td>
         </tr>
 
         <tr>
             <td colspan="4">
                 <strong>Dirección:</strong>
-                {{ $guardianTitular->address }}
+                {{ $guardianTitular?->address ?? 'No informado' }}
             </td>
         </tr>
 
         <tr>
             <td colspan="2">
                 <strong>Comuna:</strong>
-                {{ $guardianTitular->commune }}
+                {{ $guardianTitular?->commune ?? 'No informado' }}
             </td>
+
             <td>
                 <strong>Teléfono:</strong>
-                {{ $guardianTitular->phone }}
+                {{ $guardianTitular?->phone ?? 'No informado' }}
             </td>
+
             <td>
                 <strong>Sexo:</strong>
-                {{ $guardianTitular->gender ?? 'No informado' }}
+                {{ $guardianTitular?->gender ?? 'No informado' }}
             </td>
         </tr>
 
         <tr>
             <td colspan="2">
                 <strong>Teléfono de emergencia:</strong>
-                {{ $guardianTitular->emergency_phone ?? 'No informado' }}
+                {{ $guardianTitular?->emergency_phone ?? 'No informado' }}
             </td>
+
             <td colspan="2">
                 <strong>Nivel educacional:</strong>
-                {{ $guardianTitular->education_level }}
+                {{ $guardianTitular?->education_level ?? 'No informado' }}
             </td>
         </tr>
 
         <tr>
-            
             <td colspan="4">
                 <strong>¿Con quién vive el estudiante?:</strong>
-                {{ $enrollment->lives_with }}
+                {{ $enrollment->lives_with ?? 'No informado' }}
             </td>
         </tr>
     </table>

@@ -1,21 +1,15 @@
 <div class="space-y-4">
 
     {{-- Filtros --}}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-            <label class="text-sm font-medium">Año</label>
-            <input type="number" wire:model="schoolYear" class="w-full border rounded px-2 py-1">
-        </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
         <div>
             <label class="text-sm font-medium">Curso</label>
-            <select wire:model="courseId" class="w-full border rounded px-2 py-1">
+            <select wire:model.live="courseId" class="w-full border rounded px-2 py-1">
                 <option value="">Todos</option>
-                @foreach ($courses as $course)
-                    <option value="{{ $course->id }}">
-                        {{ $course->gradeLevel->name }}
-                        {{ $course->letter }}
-                        {{ $course->specialty }}
+                @foreach ($courseOptions as $opt)
+                    <option value="{{ $opt['id'] }}">
+                        {{ $opt['label'] }}
                     </option>
                 @endforeach
             </select>
@@ -23,7 +17,7 @@
 
         <div>
             <label class="text-sm font-medium">Estado</label>
-            <select wire:model="status" class="w-full border rounded px-2 py-1">
+            <select wire:model.live="status" class="w-full border rounded px-2 py-1">
                 <option value="">Todos</option>
                 <option value="Pending">Pendiente</option>
                 <option value="Confirmed">Confirmada</option>
@@ -32,9 +26,12 @@
 
         <div>
             <label class="text-sm font-medium">Buscar alumno / RUT</label>
-            <input type="text" wire:model.debounce.400ms="search" class="w-full border rounded px-2 py-1">
+            <input type="text" wire:model="search" wire:keyup.debounce.400ms="$refresh" placeholder="Nombre o RUT"
+                class="w-full border rounded px-2 py-1">
         </div>
+
     </div>
+
 
     {{-- Tabla --}}
     <div class="overflow-x-auto">

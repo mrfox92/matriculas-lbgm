@@ -1,4 +1,4 @@
-<div wire:key="guardian-search-modal">
+<div>
     @if ($open)
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
@@ -9,7 +9,7 @@
                     class="w-full border rounded px-3 py-2 mb-4" placeholder="Buscar por nombre o RUT">
 
                 <ul class="max-h-64 overflow-y-auto border rounded divide-y">
-                    @forelse($results as $g)
+                    @forelse(($results ?? collect()) as $g)
                         <li wire:key="guardian-result-{{ $g->id }}"
                             class="px-3 py-2 flex justify-between items-center hover:bg-gray-100">
                             <div>

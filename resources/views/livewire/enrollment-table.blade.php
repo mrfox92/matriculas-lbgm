@@ -1,54 +1,48 @@
 <div class="space-y-4">
 
-    {{-- Filtros --}}
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div>
-            <label class="block text-sm font-medium">Año</label>
-            <input type="number" wire:model="schoolYear" class="w-full border rounded px-2 py-1">
-        </div>
+    {{-- FILTROS --}}
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
 
+        {{-- Curso --}}
         <div>
-            <label class="block text-sm font-medium">Curso</label>
-            <select wire:model="courseId" class="w-full border rounded px-2 py-1">
+            <label class="block text-sm font-medium mb-1">Curso</label>
+            <select wire:model.live="courseId" class="w-full border rounded px-3 py-2">
                 <option value="">Todos</option>
                 @foreach ($courses as $course)
                     <option value="{{ $course->id }}">
-                        {{ $course->gradeLevel->name }}
-                        @if ($course->letter)
-                            {{ $course->letter }}
-                        @endif
-                        @if ($course->specialty)
-                            - {{ $course->specialty }}
-                        @endif
+                        {{ $course->full_name }}
                     </option>
                 @endforeach
             </select>
         </div>
 
+        {{-- Tipo alumno --}}
         <div>
-            <label class="block text-sm font-medium">Tipo alumno</label>
-            <select wire:model="enrollmentType" class="w-full border rounded px-2 py-1">
+            <label class="block text-sm font-medium mb-1">Tipo alumno</label>
+            <select wire:model.live="enrollmentType" class="w-full border rounded px-3 py-2">
                 <option value="">Todos</option>
                 <option value="New Student">Nuevo</option>
                 <option value="Returning Student">Antiguo</option>
             </select>
         </div>
 
-
+        {{-- Estado --}}
         <div>
-            <label class="block text-sm font-medium">Estado</label>
-            <select wire:model="status" class="w-full border rounded px-2 py-1">
+            <label class="block text-sm font-medium mb-1">Estado</label>
+            <select wire:model.live="status" class="w-full border rounded px-3 py-2">
                 <option value="">Todos</option>
                 <option value="Pending">Pendiente</option>
                 <option value="Confirmed">Confirmada</option>
-                <option value="Cancelled">Anulada</option>
             </select>
         </div>
 
+        {{-- Buscar --}}
         <div>
-            <label class="block text-sm font-medium">Buscar por nombre / RUT</label>
-            <input type="text" wire:model.debounce.500ms="search" class="w-full border rounded px-2 py-1">
+            <label class="block text-sm font-medium mb-1">Buscar por nombre / RUT</label>
+            <input type="text" wire:model.live="search" wire:keyup.debounce.400ms="$refresh"
+                class="w-full border rounded px-3 py-2" placeholder="Ej: 22.847.919-5 o Juan">
         </div>
+
     </div>
 
     {{-- Tabla --}}
@@ -77,7 +71,13 @@
                         </td>
 
                         <td class="px-2 py-1 border">
-                            {{ optional($enr->guardianTitular)->full_name }}
+                            @if ($enr->guardianTitular)
+                                {{ $enr->guardianTitular->full_name }}
+                            @else
+                                <span class="text-gray-400 italic">
+                                    No informado
+                                </span>
+                            @endif
                         </td>
                         <!-- Tipo alumno -->
                         <td class="px-2 py-1 border">
@@ -92,7 +92,7 @@
                             @endif
                         </td>
                         <!-- Estado proceso matricula -->
-                        <td>
+                        <td class="px-2 py-1 border">
                             @if ($enr->status === 'Confirmed')
                                 <span class="px-2 py-1 rounded bg-green-100 text-green-800">Confirmada</span>
                             @elseif($enr->status === 'Pending')
@@ -102,12 +102,63 @@
                             @endif
                         </td>
 
-                        <td class="px-2 py-1 border space-x-2">
-                            <a href="{{ route('enrollments.edit', $enr) }}" class="text-blue-600 underline">Editar</a>
-                            <a href="{{ route('enrollments.pdf', $enr) }}" class="text-green-600 underline"
+                        <td class="border px-2 py-1">
+                            {{-- <a href="{{ route('enrollments.pdf', $enr) }}" class="text-green-600 underline"
                                 target="_blank">
                                 PDF
-                            </a>
+                            </a> --}}
+                            <div class="flex items-center justify-center gap-2">
+
+                                {{-- Editar --}}
+                                <a href="{{ route('enrollments.edit', $enr) }}" title="Editar matrícula"
+                                    aria-label="Editar matrícula"
+                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs
+                  border border-blue-500 text-blue-600 rounded
+                  hover:bg-blue-50">
+                                    {{-- Icono lápiz --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                    Editar
+                                </a>
+
+                                {{-- Ver / Imprimir --}}
+                                <a href="{{ route('enrollments.pdf.view', $enr) }}" target="_blank"
+                                    title="Ver o imprimir ficha" aria-label="Ver o imprimir ficha"
+                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs
+                  border border-gray-400 text-gray-700 rounded
+                  hover:bg-gray-100">
+                                    {{-- Icono ojo --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
+                         c4.478 0 8.268 2.943 9.542 7
+                         -1.274 4.057-5.064 7-9.542 7
+                         -4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Ver
+                                </a>
+
+                                {{-- Descargar PDF --}}
+                                <a href="{{ route('enrollments.pdf.download', $enr) }}" title="Descargar PDF"
+                                    aria-label="Descargar PDF"
+                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs
+                  bg-blue-600 text-white rounded
+                  hover:bg-blue-700">
+                                    {{-- Icono descarga --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+                                    </svg>
+                                    PDF
+                                </a>
+
+                            </div>
                         </td>
                     </tr>
                 @empty

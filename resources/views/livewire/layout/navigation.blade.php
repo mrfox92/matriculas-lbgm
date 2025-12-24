@@ -23,7 +23,9 @@ new class extends Component {
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" wire:navigate>
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        <img src="{{ asset('images/logo-lbgm.png') }}" alt="Liceo Bicentenario Gabriela Mistral"
+                            class="h-10 w-auto object-contain" />
+
                     </a>
                 </div>
 

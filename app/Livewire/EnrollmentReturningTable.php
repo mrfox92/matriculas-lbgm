@@ -11,50 +11,117 @@ class EnrollmentReturningTable extends Component
 {
     use WithPagination;
 
-    public $schoolYear;
-    public $courseId = '';
-    public $status = '';
-    public $search = '';
+    protected $paginationTheme = 'tailwind';
 
-    protected $queryString = ['schoolYear', 'courseId', 'status', 'search'];
+    private const SCHOOL_YEAR = 2026;
 
-    public function mount()
+    public string $courseId = '';
+    public string $status = '';
+    public string $search = '';
+
+    /** Opciones fijas del select (no cambian con filtros) */
+    public array $courseOptions = [];
+
+    protected $queryString = [
+        'courseId' => ['except' => ''],
+        'status' => ['except' => ''],
+        'search' => ['except' => ''],
+    ];
+
+    public function mount(): void
     {
-        $this->schoolYear = $this->schoolYear ?? now()->year + 1;
+        // Cargar 1 sola vez (liviano)
+        $this->courseOptions = Course::query()
+            ->where('school_year', self::SCHOOL_YEAR)
+            ->with('gradeLevel:id,name')
+            ->orderBy('grade_level_id')
+            ->orderBy('letter')
+            ->orderBy('specialty')
+            ->get()
+            ->map(fn($c) => [
+                'id' => (string) $c->id,
+                'label' => trim(
+                    ($c->gradeLevel?->name ?? '') . ' ' .
+                    ($c->letter ?? '') . ' ' .
+                    ($c->specialty ?? '')
+                ),
+            ])
+            ->toArray();
     }
 
-    public function updating($field)
+    public function updatedSearch(): void
     {
+        // mismo criterio que GuardianSearchModal
+        if (strlen(trim($this->search)) < 2) {
+            $this->resetPage();
+            return;
+        }
+
+        $this->resetPage();
+    }
+
+    public function updated($property): void
+    {
+        // Cualquier cambio de filtro resetea paginación
         $this->resetPage();
     }
 
     public function render()
     {
-        $query = Enrollment::with(['student', 'course.gradeLevel', 'guardianTitular'])
-            ->where('school_year', $this->schoolYear)
+        $query = Enrollment::query()
+            ->with([
+                'student:id,first_name,last_name_father,last_name_mother,rut',
+                'course:id,grade_level_id,letter,specialty',
+                'course.gradeLevel:id,name',
+                'guardianTitular:id,first_name,last_name_father,last_name_mother',
+            ])
+            ->where('school_year', self::SCHOOL_YEAR)
             ->where('enrollment_type', 'Returning Student');
 
-        if ($this->courseId) {
+        // Curso
+        if ($this->courseId !== '') {
             $query->where('course_id', $this->courseId);
         }
 
+        // Estado
         if ($this->status !== '') {
             $query->where('status', $this->status);
         }
 
-        if ($this->search) {
-            $query->whereHas('student', function ($q) {
-                $q->where('rut', 'like', "%{$this->search}%")
-                  ->orWhere('first_name', 'like', "%{$this->search}%")
-                  ->orWhere('last_name_father', 'like', "%{$this->search}%");
+        // Buscar alumno / RUT
+        // Buscar alumno / RUT (optimizado tipo GuardianSearchModal)
+        $term = trim($this->search);
+
+        if (strlen($term) >= 2) {
+
+            $rutLike = strtolower(preg_replace('/[^0-9kK]/', '', $term));
+            $isRutSearch = preg_match('/[0-9kK]/', $rutLike);
+
+            $query->whereHas('student', function ($q) use ($term, $rutLike, $isRutSearch) {
+
+                $q->where(function ($qq) use ($term, $rutLike, $isRutSearch) {
+
+                    //  Buscar por RUT normalizado
+                    if ($isRutSearch && $rutLike !== '') {
+                        $qq->orWhereRaw(
+                            "REPLACE(REPLACE(LOWER(rut), '.', ''), '-', '') LIKE ?",
+                            ["%{$rutLike}%"]
+                        );
+                    }
+
+                    // Buscar por nombre / apellidos
+                    $qq->orWhere('first_name', 'like', "%{$term}%")
+                        ->orWhere('last_name_father', 'like', "%{$term}%")
+                        ->orWhere('last_name_mother', 'like', "%{$term}%");
+                });
             });
         }
 
+
         return view('livewire.enrollment-returning-table', [
-            'enrollments' => $query->orderBy('id', 'desc')->paginate(50),
-            'courses' => Course::where('school_year', $this->schoolYear)
-                ->with('gradeLevel')
-                ->get(),
+            'enrollments' => $query
+                ->orderBy('id', 'desc')   // ✅ vuelve el orden esperado
+                ->paginate(50),
         ]);
     }
 }

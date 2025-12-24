@@ -9,10 +9,11 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('users.index', [
-            'users' => User::with('roles')->orderBy('name')->paginate(5),
-            'roles' => Role::pluck('name'),
-        ]);
+        // return view('users.index', [
+        //     'users' => User::with('roles')->orderBy('name')->paginate(5),
+        //     'roles' => Role::pluck('name'),
+        // ]);
+        return view('users.index');
     }
     public function create()
     {

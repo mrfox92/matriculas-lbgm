@@ -11,52 +11,90 @@ class EnrollmentTable extends Component
 {
     use WithPagination;
 
-    public $schoolYear;
-    public $courseId = '';
-    public $status = '';
-    public $search = '';
-    public $enrollmentType = '';
+    protected $paginationTheme = 'tailwind';
 
-    protected $queryString = ['schoolYear', 'courseId', 'status', 'search', 'enrollmentType'];
+    private const SCHOOL_YEAR = 2026;
 
-    public function mount()
-    {
-        $this->schoolYear = $this->schoolYear ?? now()->year + 1;
-    }
+    public string $courseId = '';
+    public string $enrollmentType = '';
+    public string $status = '';
+    public string $search = '';
 
-    public function updating($name, $value)
+    protected $queryString = [
+        'courseId'        => ['except' => ''],
+        'enrollmentType'  => ['except' => ''],
+        'status'          => ['except' => ''],
+        'search'          => ['except' => ''],
+    ];
+
+    public function updated($property): void
     {
         $this->resetPage();
     }
 
     public function render()
     {
-        $query = Enrollment::with(['student', 'course.gradeLevel', 'guardianTitular'])
-            ->year($this->schoolYear);
+        $query = Enrollment::query()
+            ->with([
+                'student:id,first_name,last_name_father,last_name_mother,rut',
+                'course:id,grade_level_id,letter,specialty',
+                'course.gradeLevel:id,name',
+                'guardianTitular:id,first_name,last_name_father,last_name_mother',
+            ])
+            ->where('school_year', self::SCHOOL_YEAR);
 
-        if ($this->courseId) {
-            $query->course($this->courseId);
+        // Curso
+        if ($this->courseId !== '') {
+            $query->where('course_id', $this->courseId);
         }
 
-        if ($this->status) {
-            $query->status($this->status);
-        }
-
-        if ($this->enrollmentType) {
+        // Tipo alumno
+        if ($this->enrollmentType !== '') {
             $query->where('enrollment_type', $this->enrollmentType);
         }
 
-        if ($this->search) {
-            $query->searchStudent($this->search);
+        // Estado
+        if ($this->status !== '') {
+            $query->where('status', $this->status);
         }
 
-        $enrollments = $query->orderByRaw("enrollment_type = 'New Student' DESC")
-            ->orderBy('id', 'desc')
-            ->paginate(50);
+        // Buscar nombre / RUT (normalizado)
+        $term = trim($this->search);
+
+        if (strlen($term) >= 2) {
+
+            $rutLike = strtolower(preg_replace('/[^0-9kK]/', '', $term));
+
+            $query->whereHas('student', function ($q) use ($term, $rutLike) {
+                $q->where(function ($qq) use ($term, $rutLike) {
+
+                    if ($rutLike !== '') {
+                        $qq->orWhereRaw(
+                            "REPLACE(REPLACE(LOWER(rut), '.', ''), '-', '') LIKE ?",
+                            ["%{$rutLike}%"]
+                        );
+                    }
+
+                    $qq->orWhere('first_name', 'like', "%{$term}%")
+                       ->orWhere('last_name_father', 'like', "%{$term}%")
+                       ->orWhere('last_name_mother', 'like', "%{$term}%");
+                });
+            });
+        }
 
         return view('livewire.enrollment-table', [
-            'enrollments' => $enrollments,
-            'courses' => Course::where('school_year', $this->schoolYear)->with('gradeLevel')->get(),
+            'enrollments' => $query
+                ->orderByRaw("enrollment_type = 'New Student' DESC")
+                ->orderBy('id', 'desc')
+                ->paginate(50),
+
+            'courses' => Course::query()
+                ->where('school_year', self::SCHOOL_YEAR)
+                ->with('gradeLevel:id,name')
+                ->orderBy('grade_level_id')
+                ->orderBy('letter')
+                ->orderBy('specialty')
+                ->get(),
         ]);
     }
 }

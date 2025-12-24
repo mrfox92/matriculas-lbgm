@@ -99,9 +99,9 @@ class EnrollmentEditForm extends Component
         'Yagán',
         'Chango',
     ];
-     /* ----------------------------
-       LISTADO NACIONALIDADES
-       ---------------------------- */
+    /* ----------------------------
+      LISTADO NACIONALIDADES
+      ---------------------------- */
     public array $nationalities = [
         'Chilena',
         'Afghana',
@@ -142,22 +142,22 @@ class EnrollmentEditForm extends Component
     /* ----------------------------
         EVENTO LISTENER
    ---------------------------- */
-   #[On('guardian-selected')]
-public function handleGuardianSelected(array $data): void
+    #[On('guardian-selected')]
+public function handleGuardianSelected(int $guardian_id, string $type): void
 {
-    $guardianId = (int) ($data['guardian_id'] ?? 0);
+    $guardianId = (int) $guardian_id;
 
-    // usa el que viene del modal si existe, si no, el contexto guardado
-    $type = $data['type'] ?? $this->guardianSelecting;
+    if (!in_array($type, ['titular', 'suplente'], true)) {
+        return;
+    }
 
-    // Limpia mensaje previo
     $this->guardianMessage = '';
     $this->guardianMessageType = '';
 
     $titularId  = $this->guardian_titular_id ? (int) $this->guardian_titular_id : null;
     $suplenteId = $this->guardian_suplente_id ? (int) $this->guardian_suplente_id : null;
 
-    // Validación cruzada (con ints)
+    // ✅ Validación: no pueden ser el mismo
     if (
         ($type === 'titular'  && $suplenteId !== null && $guardianId === $suplenteId) ||
         ($type === 'suplente' && $titularId  !== null && $guardianId === $titularId)
@@ -170,7 +170,7 @@ public function handleGuardianSelected(array $data): void
     if ($type === 'titular') {
         $this->guardian_titular_id = $guardianId;
         $this->guardianTitular = Guardian::find($guardianId);
-    } elseif ($type === 'suplente') {
+    } else {
         $this->guardian_suplente_id = $guardianId;
         $this->guardianSuplente = Guardian::find($guardianId);
     }
@@ -199,11 +199,12 @@ public function handleGuardianSelected(array $data): void
 
     public function openGuardianModal(string $type): void
     {
-        $this->guardianSelecting = $type;
+        // $this->guardianSelecting = $type;
 
-        $this->dispatch('open-guardian-modal', [
-            'type' => $type,
-        ]);
+        // $this->dispatch('open-guardian-modal', [
+        //     'type' => $type,
+        // ]);
+        $this->dispatch('open-guardian-modal', type: $type);
     }
 
     public function updatedGuardianRelationship($value)
@@ -215,14 +216,14 @@ public function handleGuardianSelected(array $data): void
 
     public function updatedIndigenousAncestry($value)
     {
-        if ((int)$value !== 1) {
+        if ((int) $value !== 1) {
             $this->indigenous_ancestry_type = null;
         }
     }
 
     public function updatedHasHealthIssues($value)
     {
-        if ((int)$value !== 1) {
+        if ((int) $value !== 1) {
             $this->health_issues_details = null;
         }
     }
@@ -359,8 +360,8 @@ public function handleGuardianSelected(array $data): void
             'guardian_relationship' => $this->guardian_relationship,
             'guardian_relationship_other' =>
                 $this->guardian_relationship === 'Otro'
-                    ? $this->guardian_relationship_other
-                    : null,
+                ? $this->guardian_relationship_other
+                : null,
 
 
             'user_id' => Auth::id(),
