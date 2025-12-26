@@ -136,13 +136,13 @@
             </div>
 
             <div class="border-t mt-6 pt-4 flex items-center gap-8">
-                <label class="flex items-center gap-2 text-sm">
-                    <input type="checkbox" wire:model="is_pie_student" class="rounded">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" wire:model="is_pie_student">
                     Alumno PIE
                 </label>
 
-                <label class="flex items-center gap-2 text-sm">
-                    <input type="checkbox" wire:model="needs_lunch" class="rounded">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" wire:model="needs_lunch">
                     Necesita almuerzo
                 </label>
             </div>
@@ -165,8 +165,8 @@
             {{-- Mensaje --}}
             @if ($guardianMessage)
                 <div
-                    class="p-3 rounded text-sm
-            {{ $guardianMessageType === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}">
+                    class="mb-4 rounded-lg p-3 text-sm
+        {{ $guardianMessageType === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}">
                     {{ $guardianMessage }}
                 </div>
             @endif
@@ -181,12 +181,12 @@
                             <strong>{{ $guardianTitular->full_name }}</strong><br>
                             <small>{{ $guardianTitular->rut }}</small>
                         </div>
-                        <button wire:click="openGuardianModal('titular')" class="text-blue-600 font-semibold">
+                        <button wire:click="openGuardianTitular" class="text-blue-600 font-semibold">
                             Cambiar
                         </button>
                     </div>
                 @else
-                    <button wire:click="openGuardianModal('titular')" class="mt-2 px-4 py-2 bg-blue-100 border rounded">
+                    <button wire:click="openGuardianTitular" class="px-4 py-2 bg-blue-100 border rounded-lg">
                         Buscar / Registrar apoderado
                     </button>
                 @endif
@@ -202,13 +202,12 @@
                             <strong>{{ $guardianSuplente->full_name }}</strong><br>
                             <small>{{ $guardianSuplente->rut }}</small>
                         </div>
-                        <button wire:click="openGuardianModal('suplente')" class="text-blue-600 font-semibold">
+                        <button wire:click="openGuardianSuplente" class="text-blue-600 font-semibold">
                             Cambiar
                         </button>
                     </div>
                 @else
-                    <button wire:click="openGuardianModal('suplente')"
-                        class="mt-2 px-4 py-2 bg-blue-100 border rounded">
+                    <button wire:click="openGuardianSuplente" class="px-4 py-2 bg-blue-100 border rounded-lg">
                         Buscar / Registrar apoderado
                     </button>
                 @endif
@@ -216,9 +215,6 @@
 
             {{-- BOTONES --}}
             <div class="flex justify-between pt-4">
-                <button wire:click="$set('step', 1)" class="px-4 py-2 bg-gray-200 rounded">
-                    Volver
-                </button>
 
                 <button wire:click="saveGuardians" class="px-6 py-2 bg-blue-600 text-white rounded font-semibold">
                     Continuar

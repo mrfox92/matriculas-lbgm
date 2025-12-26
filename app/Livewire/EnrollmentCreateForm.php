@@ -51,8 +51,8 @@ class EnrollmentCreateForm extends Component
     public $guardian_relationship;
     public $guardian_relationship_other;
 
-    public $is_pie_student = false;
-    public $needs_lunch = false;
+    public bool $is_pie_student = false;
+    public bool $needs_lunch = false;
 
     public $consent_extra_activities = false;
     public $consent_photos = false;
@@ -81,8 +81,16 @@ class EnrollmentCreateForm extends Component
        LISTADOS (COPIA EDIT)
        ========================= */
     public array $indigenousPeoples = [
-        'Mapuche','Aymara','Rapa Nui','Quechua','Atacameño (Lickanantay)',
-        'Colla','Diaguita','Kawésqar','Yagán','Chango',
+        'Mapuche',
+        'Aymara',
+        'Rapa Nui',
+        'Quechua',
+        'Atacameño (Lickanantay)',
+        'Colla',
+        'Diaguita',
+        'Kawésqar',
+        'Yagán',
+        'Chango',
     ];
 
     public array $nationalities = [
@@ -121,7 +129,7 @@ class EnrollmentCreateForm extends Component
         'Venezolana',
         'Otra',
     ];
-    
+
     public array $religions = ['Católica', 'Evangélica', 'Testigos de Jehová', 'Mormón', 'Otra', 'Ninguna'];
 
     protected function rules()
@@ -163,13 +171,13 @@ class EnrollmentCreateForm extends Component
             'nationality' => $this->nationality,
             'religion' => $this->religion,
             'religion_other' => $this->religion_other,
-            'indigenous_ancestry' => (bool)$this->indigenous_ancestry,
+            'indigenous_ancestry' => (bool) $this->indigenous_ancestry,
             'indigenous_ancestry_type' => $this->indigenous_ancestry_type,
             'address' => $this->address,
             'commune' => $this->commune,
             'phone' => $this->phone,
             'emergency_phone' => $this->emergency_phone,
-            'has_health_issues' => (bool)$this->has_health_issues,
+            'has_health_issues' => (bool) $this->has_health_issues,
             'health_issues_details' => $this->health_issues_details,
         ]);
 
@@ -179,6 +187,8 @@ class EnrollmentCreateForm extends Component
             'school_year' => now()->year + 1,
             'enrollment_type' => 'New Student',
             'status' => 'Pending',
+            'is_pie_student' => (bool) $this->is_pie_student,
+            'needs_lunch'    => (bool) $this->needs_lunch,
             'user_id' => Auth::id(),
         ]);
 
@@ -193,49 +203,53 @@ class EnrollmentCreateForm extends Component
        PASO 2 – APODERADOS
        ========================= */
     #[On('guardian-selected')]
-    public function handleGuardianSelected(array $data): void
+    public function handleGuardianSelected(int $guardian_id, string $type = 'titular'): void
     {
-        $guardianId = (int) ($data['guardian_id'] ?? 0);
-        $type = $data['type'] ?? $this->guardianSelecting;
-
         $this->guardianMessage = '';
         $this->guardianMessageType = '';
 
-        $titularId  = $this->guardian_titular_id;
-        $suplenteId = $this->guardian_suplente_id;
+        // Validación cruzada
+        if ($type === 'suplente' && $this->guardian_titular_id === $guardian_id) {
+            $this->guardianMessage = 'El apoderado titular y suplente no pueden ser la misma persona.';
+            $this->guardianMessageType = 'error';
+            return;
+        }
 
-        if (
-            ($type === 'titular'  && $suplenteId && $guardianId === $suplenteId) ||
-            ($type === 'suplente' && $titularId  && $guardianId === $titularId)
-        ) {
+        if ($type === 'titular' && $this->guardian_suplente_id === $guardian_id) {
             $this->guardianMessage = 'El apoderado titular y suplente no pueden ser la misma persona.';
             $this->guardianMessageType = 'error';
             return;
         }
 
         if ($type === 'titular') {
-            $this->guardian_titular_id = $guardianId;
-            $this->guardianTitular = Guardian::find($guardianId);
+            $this->guardian_titular_id = $guardian_id;
+            $this->guardianTitular = Guardian::find($guardian_id);
+            $this->guardianMessage = 'Apoderado titular asignado correctamente.';
         }
 
         if ($type === 'suplente') {
-            $this->guardian_suplente_id = $guardianId;
-            $this->guardianSuplente = Guardian::find($guardianId);
+            $this->guardian_suplente_id = $guardian_id;
+            $this->guardianSuplente = Guardian::find($guardian_id);
+            $this->guardianMessage = 'Apoderado suplente asignado correctamente.';
         }
 
-        $this->guardianMessage = 'Apoderado asignado correctamente.';
         $this->guardianMessageType = 'success';
+        $this->resetErrorBag();
     }
 
-    public function openGuardianModal(string $type): void
+    public function openGuardianTitular(): void
     {
-        $this->guardianSelecting = $type;
-
-        $this->dispatch('open-guardian-modal', [
-            'type' => $type,
-        ]);
+        $this->guardianMessage = '';
+        $this->guardianMessageType = '';
+        $this->dispatch('open-guardian-modal', type: 'titular');
     }
 
+    public function openGuardianSuplente(): void
+    {
+        $this->guardianMessage = '';
+        $this->guardianMessageType = '';
+        $this->dispatch('open-guardian-modal', type: 'suplente');
+    }
 
 
     public function saveGuardians(): void
@@ -268,8 +282,8 @@ class EnrollmentCreateForm extends Component
             'guardian_relationship' => $this->guardian_relationship,
             'guardian_relationship_other' =>
                 $this->guardian_relationship === 'Otro'
-                    ? $this->guardian_relationship_other
-                    : null,
+                ? $this->guardian_relationship_other
+                : null,
 
             'consent_extra_activities' => $this->consent_extra_activities,
             'consent_photos' => $this->consent_photos,
@@ -287,8 +301,8 @@ class EnrollmentCreateForm extends Component
 
         // session()->flash('success', 'Matrícula completada correctamente.');
         return redirect()
-        ->route('enrollments.new.index')
-        ->with('success', 'Matrícula completada correctamente.');
+            ->route('enrollments.new.index')
+            ->with('success', 'Matrícula completada correctamente.');
     }
 
     public function updatedGuardianRelationship($value)
@@ -300,14 +314,14 @@ class EnrollmentCreateForm extends Component
 
     public function updatedIndigenousAncestry($value)
     {
-        if ((int)$value !== 1) {
+        if ((int) $value !== 1) {
             $this->indigenous_ancestry_type = null;
         }
     }
 
     public function updatedHasHealthIssues($value)
     {
-        if ((int)$value !== 1) {
+        if ((int) $value !== 1) {
             $this->health_issues_details = null;
         }
     }
