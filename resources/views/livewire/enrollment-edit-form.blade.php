@@ -227,9 +227,10 @@
                         <small>{{ $guardianTitular->rut }}</small>
                     </div>
 
-                    <button wire:click="openGuardianModal('titular')" class="text-blue-600 font-semibold">
+                    <button wire:click="openGuardianTitular" class="text-blue-600 font-semibold">
                         Cambiar
                     </button>
+
                 </div>
             @else
                 <button wire:click="$dispatch('open-guardian-modal', { type: 'titular' })"
@@ -250,7 +251,7 @@
                         <small>{{ $guardianSuplente->rut }}</small>
                     </div>
 
-                    <button wire:click="openGuardianModal('suplente')" class="text-blue-600 font-semibold">
+                    <button wire:click="openGuardianSuplente" class="text-blue-600 font-semibold">
                         Cambiar
                     </button>
                 </div>

@@ -143,41 +143,42 @@ class EnrollmentEditForm extends Component
         EVENTO LISTENER
    ---------------------------- */
     #[On('guardian-selected')]
-public function handleGuardianSelected(int $guardian_id, string $type): void
-{
-    $guardianId = (int) $guardian_id;
+    public function handleGuardianSelected(int $guardian_id, string $type = 'titular'): void
+    {
+        // Limpia mensajes previos
+        $this->guardianMessage = '';
+        $this->guardianMessageType = '';
 
-    if (!in_array($type, ['titular', 'suplente'], true)) {
-        return;
+        // 🔒 Validación cruzada
+        if ($type === 'suplente' && $this->guardian_titular_id === $guardian_id) {
+            $this->guardianMessage = 'El apoderado titular y suplente no pueden ser la misma persona.';
+            $this->guardianMessageType = 'error';
+            return;
+        }
+
+        if ($type === 'titular' && $this->guardian_suplente_id === $guardian_id) {
+            $this->guardianMessage = 'El apoderado titular y suplente no pueden ser la misma persona.';
+            $this->guardianMessageType = 'error';
+            return;
+        }
+
+        if ($type === 'titular') {
+            $this->guardian_titular_id = $guardian_id;
+            $this->guardianTitular = Guardian::find($guardian_id);
+            $this->guardianMessage = 'Apoderado titular asignado correctamente.';
+        }
+
+        if ($type === 'suplente') {
+            $this->guardian_suplente_id = $guardian_id;
+            $this->guardianSuplente = Guardian::find($guardian_id);
+            $this->guardianMessage = 'Apoderado suplente asignado correctamente.';
+        }
+
+        $this->guardianMessageType = 'success';
+
+        // Limpia errores viejos (por si antes hubo error)
+        $this->resetErrorBag();
     }
-
-    $this->guardianMessage = '';
-    $this->guardianMessageType = '';
-
-    $titularId  = $this->guardian_titular_id ? (int) $this->guardian_titular_id : null;
-    $suplenteId = $this->guardian_suplente_id ? (int) $this->guardian_suplente_id : null;
-
-    // ✅ Validación: no pueden ser el mismo
-    if (
-        ($type === 'titular'  && $suplenteId !== null && $guardianId === $suplenteId) ||
-        ($type === 'suplente' && $titularId  !== null && $guardianId === $titularId)
-    ) {
-        $this->guardianMessage = 'El apoderado titular y suplente no pueden ser la misma persona.';
-        $this->guardianMessageType = 'error';
-        return;
-    }
-
-    if ($type === 'titular') {
-        $this->guardian_titular_id = $guardianId;
-        $this->guardianTitular = Guardian::find($guardianId);
-    } else {
-        $this->guardian_suplente_id = $guardianId;
-        $this->guardianSuplente = Guardian::find($guardianId);
-    }
-
-    $this->guardianMessage = 'Apoderado actualizado correctamente.';
-    $this->guardianMessageType = 'success';
-}
 
     /* ----------------------------
        REGLAS DE VALIDACION
@@ -196,15 +197,18 @@ public function handleGuardianSelected(int $guardian_id, string $type): void
 
         ];
     }
-
-    public function openGuardianModal(string $type): void
+    public function openGuardianTitular(): void
     {
-        // $this->guardianSelecting = $type;
+        $this->guardianMessage = '';
+        $this->guardianMessageType = '';
+        $this->dispatch('open-guardian-modal', type: 'titular');
+    }
 
-        // $this->dispatch('open-guardian-modal', [
-        //     'type' => $type,
-        // ]);
-        $this->dispatch('open-guardian-modal', type: $type);
+    public function openGuardianSuplente(): void
+    {
+        $this->guardianMessage = '';
+        $this->guardianMessageType = '';
+        $this->dispatch('open-guardian-modal', type: 'suplente');
     }
 
     public function updatedGuardianRelationship($value)

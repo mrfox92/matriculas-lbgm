@@ -37,34 +37,35 @@ class GuardianCreateModal extends Component
     }
 
     public function save()
-{
-    $guardian = Guardian::create([
-        'rut' => $this->rut,
-        'first_name' => $this->first_name,
-        'last_name_father' => $this->last_name_father,
-        'last_name_mother' => $this->last_name_mother,
-        'gender' => $this->gender,
-        'birth_date' => $this->birth_date,
+    {
+        $guardian = Guardian::create([
+            'rut' => $this->rut,
+            'first_name' => $this->first_name,
+            'last_name_father' => $this->last_name_father,
+            'last_name_mother' => $this->last_name_mother,
+            'gender' => $this->gender,
+            'birth_date' => $this->birth_date,
 
-        'address' => $this->address,
-        'commune' => $this->commune,
-        'phone' => $this->phone,
-        'emergency_phone' => $this->emergency_phone,
+            'address' => $this->address,
+            'commune' => $this->commune,
+            'phone' => $this->phone,
+            'emergency_phone' => $this->emergency_phone,
 
-        'education_level' => $this->education_level,
-        'employment_status' => $this->employment_status,
-        'work_main_place' => $this->work_main_place,
-        'workplace' => $this->workplace,
-    ]);
+            'education_level' => $this->education_level,
+            'employment_status' => $this->employment_status,
+            'work_main_place' => $this->work_main_place,
+            'workplace' => $this->workplace,
+        ]);
 
-    $this->dispatch('guardian-selected', [
-        'guardian_id' => $guardian->id,
-        'type' => $this->type,
-    ]);
+        $this->dispatch(
+            'guardian-selected',
+            guardian_id: $guardian->id,
+            type: $this->type
+        );
 
-    $this->dispatch('close-guardian-modal'); // NUEVO
-    $this->open = false;
-}
+        $this->dispatch('close-guardian-modal'); // NUEVO
+        $this->open = false;
+    }
 
     public function render()
     {
