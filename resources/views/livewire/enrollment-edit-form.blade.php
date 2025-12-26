@@ -348,8 +348,7 @@
 
             <label class="flex gap-2">
                 <input type="checkbox" wire:model="accept_school_rules" class="mt-1 rounded border-gray-300">
-                Declaro haber leído y aceptado el
-                <strong>Reglamento Interno del Establecimiento</strong>.
+                Declaro haber leído y aceptado el Reglamento de Evaluación del establecimiento.
             </label>
 
             <label class="flex gap-2">

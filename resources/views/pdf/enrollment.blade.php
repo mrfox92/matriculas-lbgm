@@ -232,18 +232,19 @@
 
     <table>
         <tr>
-            <td>Reglamento Interno</td>
+            <td>Reglamento de Evaluación del Establecimiento</td>
             <td class="center">ACEPTADO</td>
         </tr>
         <tr>
-            <td>Manual de Convivencia Escolar</td>
+            <td>Manual de Convivencia Escolar vigente</td>
             <td class="center">ACEPTADO</td>
         </tr>
         <tr>
-            <td>Términos del proceso de matrícula</td>
+            <td>Términos y condiciones del proceso de matrícula</td>
             <td class="center">ACEPTADO</td>
         </tr>
     </table>
+
 
     <p><strong>Fecha de aceptación:</strong> {{ $enrollment->accepted_at?->format('d/m/Y') }}</p>
 

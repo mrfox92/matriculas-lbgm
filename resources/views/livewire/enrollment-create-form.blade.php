@@ -298,7 +298,7 @@
             <div class="space-y-3 text-sm">
                 <label class="flex gap-2">
                     <input type="checkbox" wire:model="accept_school_rules">
-                    Declaro haber leído y aceptado el Reglamento Interno.
+                    Declaro haber leído y aceptado el Reglamento de Evaluación del establecimiento.
                 </label>
 
                 <label class="flex gap-2">
@@ -308,7 +308,9 @@
 
                 <label class="flex gap-2">
                     <input type="checkbox" wire:model="accept_terms_conditions">
-                    Acepto los términos y condiciones del proceso.
+                        Acepto los
+                    <strong>términos y condiciones</strong>
+                    del proceso de matrícula.
                 </label>
             </div>
 
@@ -328,7 +330,6 @@
                 Confirmar matrícula
             </button>
         </div>
-
 
     @endif
 

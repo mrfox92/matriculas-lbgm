@@ -130,7 +130,12 @@ class EnrollmentCreateForm extends Component
         'Otra',
     ];
 
-    public array $religions = ['Católica', 'Evangélica', 'Testigos de Jehová', 'Mormón', 'Otra', 'Ninguna'];
+    public array $religions = [
+    'Católica',
+    'Evangélica',
+    'Otra',
+    'Ninguna',
+];
 
     protected function rules()
     {
