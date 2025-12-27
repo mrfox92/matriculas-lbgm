@@ -34,9 +34,12 @@ class GuardianSearchModal extends Component
 
 
     #[On('close-guardian-modal')]
+    #[On('close-guardian-search-modal')]
     public function closeModal(): void
     {
         $this->open = false;
+        $this->reset('search');
+        $this->results = collect();
     }
 
     public function searchGuardians(): void

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PanelController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DashboardController;
@@ -82,10 +83,23 @@ Route::middleware(['auth', 'active'])->group(function () {
 
             Route::patch('/{user}/toggle', [UserController::class, 'toggle'])
                 ->name('users.toggle');
-                
+
             Route::delete('/{user}', [UserController::class, 'destroy'])
                 ->name('users.destroy');
 
 
         });
+
+    // =============================================
+    // PANEL ADMINISTRATIVO
+    // =============================================
+    Route::middleware('role:admin')
+        ->prefix('panel')
+        ->group(function () {
+
+            Route::get('/', [PanelController::class, 'index'])
+                ->name('panel.index');
+
+        });
+
 });

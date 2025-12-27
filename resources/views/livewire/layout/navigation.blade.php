@@ -62,6 +62,12 @@ new class extends Component {
                         </x-nav-link>
                     @endif
 
+                    @role('admin')
+                        <x-nav-link :href="route('panel.index')" :active="request()->routeIs('panel.*')" wire:navigate>
+                            {{ __('Panel') }}
+                        </x-nav-link>
+                    @endrole
+
                 </div>
             </div>
 

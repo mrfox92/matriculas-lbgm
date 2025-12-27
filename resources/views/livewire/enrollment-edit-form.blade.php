@@ -3,11 +3,11 @@
 <div class="space-y-10">
 
     {{-- Mensaje de éxito --}}
-    @if (session('success'))
+    {{-- @if (session('success'))
         <div class="p-4 bg-green-100 text-green-800 rounded-lg shadow">
             {{ session('success') }}
         </div>
-    @endif
+    @endif --}}
 
 
     {{-- ============================================================
@@ -21,19 +21,40 @@
             {{-- RUT --}}
             <div>
                 <label class="font-semibold">RUT</label>
-                <input type="text" wire:model="rut" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <input type="text" wire:model="rut"
+                    class="w-full mt-1 px-3 py-2 border rounded-lg
+                @error('rut')
+                    border-red-500 focus:border-red-500 focus:ring-red-500
+                @enderror">
+
+                @error('rut')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Nombres --}}
             <div class="md:col-span-2">
                 <label class="font-semibold">Nombres</label>
-                <input type="text" wire:model="first_name" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <input type="text" wire:model="first_name"
+                    class="w-full mt-1 px-3 py-2 border rounded-lg
+        @error('first_name') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror">
+
+                @error('first_name')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
+
 
             {{-- Apellido paterno --}}
             <div>
                 <label class="font-semibold">Apellido paterno</label>
-                <input type="text" wire:model="last_name_father" class="w-full mt-1 px-3 py-2 border rounded-lg">
+                <input type="text" wire:model="last_name_father"
+                    class="w-full mt-1 px-3 py-2 border rounded-lg
+        @error('last_name_father') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror">
+
+                @error('last_name_father')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Apellido materno --}}

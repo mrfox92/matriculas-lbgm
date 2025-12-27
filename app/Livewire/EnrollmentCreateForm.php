@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\Enrollment;
 use App\Models\Guardian;
 use App\Models\Course;
+use Illuminate\Validation\Rule;
 
 class EnrollmentCreateForm extends Component
 {
@@ -131,11 +132,11 @@ class EnrollmentCreateForm extends Component
     ];
 
     public array $religions = [
-    'Católica',
-    'Evangélica',
-    'Otra',
-    'Ninguna',
-];
+        'Católica',
+        'Evangélica',
+        'Otra',
+        'Ninguna',
+    ];
 
     protected function rules()
     {
@@ -160,10 +161,17 @@ class EnrollmentCreateForm extends Component
     public function saveStudent()
     {
         $this->validate([
-            'rut' => 'required|unique:students,rut',
-            'first_name' => 'required',
-            'last_name_father' => 'required',
-            'birth_date' => 'required|date',
+            'rut' => [
+                'required',
+                Rule::unique('students', 'rut'),
+            ],
+            'first_name' => 'required|string|min:2',
+            'last_name_father' => 'required|string|min:2',
+        ], [
+            'rut.required' => 'El RUT es obligatorio.',
+            'rut.unique' => 'Este RUT ya pertenece a un estudiante registrado.',
+            'first_name.required' => 'Los nombres son obligatorios.',
+            'last_name_father.required' => 'El apellido paterno es obligatorio.',
         ]);
 
         $student = Student::create([
@@ -193,7 +201,7 @@ class EnrollmentCreateForm extends Component
             'enrollment_type' => 'New Student',
             'status' => 'Pending',
             'is_pie_student' => (bool) $this->is_pie_student,
-            'needs_lunch'    => (bool) $this->needs_lunch,
+            'needs_lunch' => (bool) $this->needs_lunch,
             'user_id' => Auth::id(),
         ]);
 

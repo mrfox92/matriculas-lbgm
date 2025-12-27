@@ -187,6 +187,12 @@ class EnrollmentEditForm extends Component
     protected function rules()
     {
         return [
+            // ======================
+            // DATOS BÁSICOS ESTUDIANTE
+            // ======================
+            'rut' => 'required|string|min:7',
+            'first_name' => 'required|string|min:2',
+            'last_name_father' => 'required|string|min:2',
             // legales
             'accept_school_rules' => 'accepted',
             'accept_coexistence_rules' => 'accepted',
@@ -383,7 +389,12 @@ class EnrollmentEditForm extends Component
             'user_agent' => request()->userAgent(),
         ]);
 
-        session()->flash('success', 'La matrícula fue actualizada correctamente.');
+        // session()->flash('success', 'La matrícula fue actualizada correctamente.');
+        $this->dispatch(
+            'swal',
+            icon: 'success',
+            title: 'Datos actualizados correctamente'
+        );
     }
 
 
@@ -413,7 +424,12 @@ class EnrollmentEditForm extends Component
             'user_agent' => request()->userAgent(),
         ]);
 
-        session()->flash('success', 'La matrícula fue marcada como COMPLETADA.');
+        // session()->flash('success', 'La matrícula fue marcada como COMPLETADA.');
+        $this->dispatch(
+            'swal',
+            icon: 'success',
+            title: 'Matrícula marcada como COMPLETADA'
+        );
     }
 
 

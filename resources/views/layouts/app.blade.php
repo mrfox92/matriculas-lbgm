@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,10 +39,22 @@
     <script>
         document.addEventListener("livewire:init", () => {
             console.log("Livewire iniciado correctamente");
+            Livewire.on('swal', (data) => {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: data.icon,
+                    title: data.title,
+                    showConfirmButton: false,
+                    timer: data.timer ?? 2500,
+                    timerProgressBar: true,
+                });
+            });
         });
     </script>
 
     {{-- Alpine por CDN, UNA sola vez --}}
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
+
 </html>
