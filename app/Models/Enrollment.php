@@ -7,17 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 class Enrollment extends Model
 {
     protected $fillable = [
-        'student_id', 'course_id', 'school_year',
-        'guardian_titular_id', 'guardian_suplente_id',
-        'user_id', 'enrollment_date', 'enrollment_type',
-        'status', 'previous_grade_level_id', 'is_repeating',
-        'has_health_issues', 'health_issues_details',
-        'is_pie_student', 'needs_lunch',
+        'student_id',
+        'course_id',
+        'school_year',
+        'guardian_titular_id',
+        'guardian_suplente_id',
+        'user_id',
+        'enrollment_date',
+        'enrollment_type',
+        'status',
+        'previous_grade_level_id',
+        'is_repeating',
+        'has_health_issues',
+        'health_issues_details',
+        'is_pie_student',
+        'needs_lunch',
         'lives_with',
         'consent_extra_activities',
-        'consent_field_trips', 'consent_photos',
-        'consent_school_bus', 'consent_internet',
-        'internal_enrollment_number', 'notes',
+        'consent_field_trips',
+        'consent_photos',
+        'consent_school_bus',
+        'consent_internet',
+        'internal_enrollment_number',
+        'notes',
         // nuevo: Reglamentos y términos
         'accept_school_rules',
         'accept_coexistence_rules',
@@ -97,4 +109,29 @@ class Enrollment extends Model
             $q->search($value);
         });
     }
+    public function scopeApplyFilters($query, array $filters)
+    {
+        if (!empty($filters['courseId'])) {
+            $query->where('course_id', $filters['courseId']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['enrollmentType'])) {
+            $query->where('enrollment_type', $filters['enrollmentType']);
+        }
+
+        // level (si lo estás usando en el panel)
+        if (!empty($filters['level'])) {
+            $query->whereHas('course.gradeLevel', function ($q) use ($filters) {
+                // aquí filtras por tu lógica de niveles (pre básica / básica / media / adulta)
+                // depende de cómo definiste $levels en el componente
+            });
+        }
+
+        return $query;
+    }
+
 }

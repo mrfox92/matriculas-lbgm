@@ -35,6 +35,8 @@
 
     {{-- Livewire desde vendor (lo que SÍ te funcionó) --}}
     <script defer src="/vendor/livewire/livewire.js"></script>
+    {{-- Chart JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         document.addEventListener("livewire:init", () => {

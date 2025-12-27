@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PanelPdfController;
 
 Route::view('/', 'welcome');
 
@@ -99,7 +100,9 @@ Route::middleware(['auth', 'active'])->group(function () {
 
             Route::get('/', [PanelController::class, 'index'])
                 ->name('panel.index');
-
+         
+            Route::get('/export/pdf', [PanelPdfController::class, 'enrollments'])
+                ->name('panel.export.pdf');
         });
 
 });
