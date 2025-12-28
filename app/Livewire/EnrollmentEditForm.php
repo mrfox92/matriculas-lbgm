@@ -390,9 +390,9 @@ class EnrollmentEditForm extends Component
         ]);
 
         $this->dispatch(
-            'swal',
+            'toast',
             icon: 'success',
-            title: 'Datos actualizados correctamente'
+            message: 'Datos actualizados correctamente'
         );
     }
 
@@ -424,9 +424,9 @@ class EnrollmentEditForm extends Component
         ]);
 
         $this->dispatch(
-            'swal',
+            'toast',
             icon: 'success',
-            title: 'Matrícula marcada como COMPLETADA'
+            message: 'Matrícula marcada como COMPLETADA'
         );
     }
 
