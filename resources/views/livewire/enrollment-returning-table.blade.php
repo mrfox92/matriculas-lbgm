@@ -20,6 +20,7 @@
                 <option value="">Todos</option>
                 <option value="Pending">Pendiente</option>
                 <option value="Confirmed">Confirmada</option>
+                <option value="Cancelled">Anulada</option>
             </select>
         </div>
 
@@ -68,17 +69,18 @@
                                 <span class="px-2 py-1 rounded bg-green-100 text-green-800">
                                     Confirmada
                                 </span>
-                            @else
+                            @elseif ($enr->status === 'Pending')
                                 <span class="px-2 py-1 rounded bg-yellow-100 text-yellow-800">
                                     Pendiente
+                                </span>
+                            @elseif ($enr->status === 'Cancelled')
+                                <span class="px-2 py-1 rounded bg-red-100 text-red-800">
+                                    Anulada
                                 </span>
                             @endif
                         </td>
                         <td class="border px-2 py-1">
-                            {{-- <a href="{{ route('enrollments.pdf', $enr) }}" class="text-green-600 underline"
-                                target="_blank">
-                                PDF
-                            </a> --}}
+
                             <div class="flex items-center justify-center gap-2">
 
                                 {{-- Editar --}}
@@ -129,6 +131,17 @@
                                     </svg>
                                     PDF
                                 </a>
+
+                                {{-- Boton Cancelar matricula --}}
+                                @role('admin')
+                                    @if ($enr->status !== 'Cancelled')
+                                        <button wire:click="askCancel({{ $enr->id }})"
+                                            class="inline-flex items-center gap-1 px-2 py-1 text-xs
+               bg-red-600 text-white rounded hover:bg-red-700">
+                                            🗑️ Anular
+                                        </button>
+                                    @endif
+                                @endrole
 
                             </div>
                         </td>

@@ -6,6 +6,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Enrollment;
 use App\Models\Course;
+use Illuminate\Support\Facades\Gate;
+use Livewire\Attributes\On;
 
 class EnrollmentNewTable extends Component
 {
@@ -21,11 +23,13 @@ class EnrollmentNewTable extends Component
 
     /** Opciones fijas del select Curso */
     public array $courseOptions = [];
+    //  propiedad temporal para id matricula
+    public ?int $cancelId = null;
 
     protected $queryString = [
         'courseId' => ['except' => ''],
-        'status'   => ['except' => ''],
-        'search'   => ['except' => ''],
+        'status' => ['except' => ''],
+        'search' => ['except' => ''],
     ];
 
     public function mount(): void
@@ -38,7 +42,7 @@ class EnrollmentNewTable extends Component
             ->orderBy('letter')
             ->orderBy('specialty')
             ->get()
-            ->map(fn ($c) => [
+            ->map(fn($c) => [
                 'id' => (string) $c->id,
                 'label' => trim(
                     ($c->gradeLevel?->name ?? '') . ' ' .
@@ -108,8 +112,8 @@ class EnrollmentNewTable extends Component
 
                     // Nombre / apellidos
                     $qq->orWhere('first_name', 'like', "%{$term}%")
-                       ->orWhere('last_name_father', 'like', "%{$term}%")
-                       ->orWhere('last_name_mother', 'like', "%{$term}%");
+                        ->orWhere('last_name_father', 'like', "%{$term}%")
+                        ->orWhere('last_name_mother', 'like', "%{$term}%");
                 });
             });
         }
@@ -119,5 +123,45 @@ class EnrollmentNewTable extends Component
                 ->orderBy('id', 'desc')
                 ->paginate(50),
         ]);
+    }
+    //   Metodo intermedio de confirmación cancelar o anular matricula
+    public function askCancel(int $id): void
+    {
+        $this->cancelId = $id;
+
+        $this->dispatch(
+            'confirm-cancel',
+            title: '¿Anular matrícula?',
+            text: 'Esta acción no se puede deshacer'
+        );
+    }
+    #[On('confirm-cancel-yes')]
+    public function cancelEnrollment(): void
+    {
+        if (!$this->cancelId) {
+            return;
+        }
+
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        $enrollment = Enrollment::findOrFail($this->cancelId);
+
+        if ($enrollment->status === 'Cancelled') {
+            return;
+        }
+
+        if ($enrollment->status !== 'Cancelled') {
+            $enrollment->update(attributes: ['status' => 'Cancelled']);
+        }
+
+        $this->cancelId = null;
+
+        $this->dispatch(
+            'toast',
+            type: 'success',
+            message: 'Matrícula anulada correctamente'
+        );
     }
 }

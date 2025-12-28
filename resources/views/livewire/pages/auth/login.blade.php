@@ -14,10 +14,7 @@ new #[Layout('layouts.guest')] class extends Component {
         $this->form->authenticate();
         Session::regenerate();
 
-        $this->redirectIntended(
-            default: route('dashboard', absolute: false),
-            navigate: true
-        );
+        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 };
 
@@ -33,31 +30,18 @@ new #[Layout('layouts.guest')] class extends Component {
         <div>
             <x-input-label for="rut" value="RUT" />
 
-            <x-text-input
-                id="rut"
-                type="text"
-                wire:model="form.rut"
-                class="block mt-1 w-full"
-                required
-                autofocus
-                autocomplete="off"
-            />
+            <x-text-input id="rut" type="text" wire:model="form.rut" class="block mt-1 w-full" required autofocus
+                autocomplete="off" />
 
             <x-input-error :messages="$errors->get('form.rut')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" value="Password" />
+            <x-input-label for="password" value="{{ __('Password')  }}" />
 
-            <x-text-input
-                id="password"
-                type="password"
-                wire:model="form.password"
-                class="block mt-1 w-full"
-                required
-                autocomplete="current-password"
-            />
+            <x-text-input id="password" type="password" wire:model="form.password" class="block mt-1 w-full" required
+                autocomplete="current-password" />
 
             <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
         </div>
@@ -65,14 +49,14 @@ new #[Layout('layouts.guest')] class extends Component {
         <div class="block mt-4">
             <label class="inline-flex items-center">
                 <input type="checkbox" wire:model="form.remember"
-                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
                 <span class="ms-2 text-sm text-gray-600">Recordarme</span>
             </label>
         </div>
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button class="ms-3">
-                Log in
+                {{ __('Log in') }}
             </x-primary-button>
         </div>
 

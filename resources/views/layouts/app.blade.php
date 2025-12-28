@@ -40,15 +40,32 @@
 
     <script>
         document.addEventListener("livewire:init", () => {
-            console.log("Livewire iniciado correctamente");
-            Livewire.on('swal', (data) => {
+
+            Livewire.on('confirm-cancel', (data) => {
+                Swal.fire({
+                    title: data.title,
+                    text: data.text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Sí, anular',
+                    cancelButtonText: 'Cancelar',
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        Livewire.dispatch('confirm-cancel-yes');
+                    }
+                });
+            });
+
+            Livewire.on('toast', data => {
                 Swal.fire({
                     toast: true,
                     position: 'top-end',
-                    icon: data.icon,
-                    title: data.title,
+                    icon: data.type ?? 'success',
+                    title: data.message ?? 'Acción realizada',
                     showConfirmButton: false,
-                    timer: data.timer ?? 2500,
+                    timer: 2500,
                     timerProgressBar: true,
                 });
             });

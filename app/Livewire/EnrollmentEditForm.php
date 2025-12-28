@@ -389,7 +389,6 @@ class EnrollmentEditForm extends Component
             'user_agent' => request()->userAgent(),
         ]);
 
-        // session()->flash('success', 'La matrícula fue actualizada correctamente.');
         $this->dispatch(
             'swal',
             icon: 'success',
@@ -424,7 +423,6 @@ class EnrollmentEditForm extends Component
             'user_agent' => request()->userAgent(),
         ]);
 
-        // session()->flash('success', 'La matrícula fue marcada como COMPLETADA.');
         $this->dispatch(
             'swal',
             icon: 'success',

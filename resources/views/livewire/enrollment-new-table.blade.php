@@ -21,6 +21,7 @@
                 <option value="">Todos</option>
                 <option value="Pending">Pendiente</option>
                 <option value="Confirmed">Confirmada</option>
+                <option value="Cancelled">Cancelada</option>
             </select>
         </div>
 
@@ -60,15 +61,30 @@
                             {{ optional($enr->guardianTitular)->full_name }}
                         </td>
                         <td class="border px-2 py-1">
-                            @if ($enr->status === 'Confirmed')
-                                <span class="px-2 py-1 rounded bg-green-100 text-green-800">
-                                    Confirmada
-                                </span>
-                            @else
-                                <span class="px-2 py-1 rounded bg-yellow-100 text-yellow-800">
-                                    Pendiente
-                                </span>
-                            @endif
+                            @switch($enr->status)
+                                @case('Confirmed')
+                                    <span class="px-2 py-1 rounded bg-green-100 text-green-800">
+                                        Confirmada
+                                    </span>
+                                @break
+
+                                @case('Pending')
+                                    <span class="px-2 py-1 rounded bg-yellow-100 text-yellow-800">
+                                        Pendiente
+                                    </span>
+                                @break
+
+                                @case('Cancelled')
+                                    <span class="px-2 py-1 rounded bg-red-100 text-red-800">
+                                        Anulada
+                                    </span>
+                                @break
+
+                                @default
+                                    <span class="px-2 py-1 rounded bg-gray-100 text-gray-600">
+                                        Desconocido
+                                    </span>
+                            @endswitch
                         </td>
                         <td class="border px-2 py-1">
                             <div class="flex items-center justify-center gap-2">
@@ -119,20 +135,30 @@
                                     PDF
                                 </a>
 
+                                {{-- Cancelar matricula --}}
+                                @role('admin')
+                                    @if ($enr->status !== 'Cancelled')
+                                        <button wire:click="askCancel({{ $enr->id }})"
+                                            class="bg-red-600 text-white px-3 py-1 rounded text-sm">
+                                            🗑️ Anular
+                                        </button>
+                                    @endif
+                                @endrole
+
                             </div>
                         </td>
 
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-gray-500 py-4 border">
-                            No hay matrículas nuevas registradas.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center text-gray-500 py-4 border">
+                                No hay matrículas nuevas registradas.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-    {{ $enrollments->links() }}
-</div>
+        {{ $enrollments->links() }}
+    </div>

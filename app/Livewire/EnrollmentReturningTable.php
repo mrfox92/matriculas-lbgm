@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Enrollment;
 use App\Models\Course;
+use Livewire\Attributes\On;
 
 class EnrollmentReturningTable extends Component
 {
@@ -18,6 +19,9 @@ class EnrollmentReturningTable extends Component
     public string $courseId = '';
     public string $status = '';
     public string $search = '';
+
+    // ID temporal para anulación
+    public ?int $cancelId = null;
 
     /** Opciones fijas del select (no cambian con filtros) */
     public array $courseOptions = [];
@@ -64,6 +68,48 @@ class EnrollmentReturningTable extends Component
     {
         // Cualquier cambio de filtro resetea paginación
         $this->resetPage();
+    }
+
+    // Preguntar confirmación
+    public function askCancel(int $id): void
+    {
+        $this->cancelId = $id;
+
+        $this->dispatch(
+            'confirm-cancel',
+            title: '¿Anular matrícula?',
+            text: 'Esta acción no se puede deshacer'
+        );
+    }
+
+    #[On('confirm-cancel-yes')]
+    public function cancelEnrollment(): void
+    {
+        if (!$this->cancelId) {
+            return;
+        }
+
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        $enrollment = Enrollment::findOrFail($this->cancelId);
+
+        if ($enrollment->status === 'Cancelled') {
+            return;
+        }
+
+        if ($enrollment->status !== 'Cancelled') {
+            $enrollment->update(attributes: ['status' => 'Cancelled']);
+        }
+
+        $this->cancelId = null;
+
+        $this->dispatch(
+            'toast',
+            type: 'success',
+            message: 'Matrícula anulada correctamente'
+        );
     }
 
     public function render()
