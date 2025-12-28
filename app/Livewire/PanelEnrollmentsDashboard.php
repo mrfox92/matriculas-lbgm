@@ -5,7 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Enrollment;
 use App\Exports\EnrollmentsExport;
-use Maatwebsite\Excel\Facades\Excel;
+
 use Livewire\WithPagination;
 
 class PanelEnrollmentsDashboard extends Component
@@ -224,19 +224,6 @@ class PanelEnrollmentsDashboard extends Component
         return $this->baseQuery()
             ->orderBy('id', 'desc')
             ->paginate(25);
-    }
-
-    public function exportExcel()
-    {
-        return Excel::download(
-            new EnrollmentsExport([
-                'courseId' => $this->courseId,
-                'level' => $this->level,
-                'status' => $this->status,
-                'enrollmentType' => $this->enrollmentType,
-            ]),
-            'matriculas_2026.xlsx'
-        );
     }
 
     public function render()
